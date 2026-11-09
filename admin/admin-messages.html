@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Inquiries Inbox — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 style="font-family:var(--font-serif); font-size:32px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+              Website Contact Inquiries
+            </h1>
+            <p style="font-size:13.5px; color:var(--admin-ink-muted); margin-top:4px;">
+              Submissions from the homepage contact form, consultation inquiries, and replies.
+            </p>
+          </div>
+        </div>
+
+        <div id="messages-container" style="display:flex; flex-direction:column; gap:16px;">
+          <p style="color:var(--admin-ink-muted);">Loading inquiries...</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    let allMessages = [];
+
+    async function initPage() {
+      await initAdminShell('messages', 'Contact Inbox');
+      await loadMessages();
+    }
+
+    async function loadMessages() {
+      const res = await adminApi.getContactMessages();
+      if (!res.ok) return;
+      allMessages = res.data;
+      renderMessages(allMessages);
+    }
+
+    function renderMessages(messages) {
+      const container = document.getElementById('messages-container');
+      if (messages.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:50px; background:var(--admin-white); border:1px solid var(--admin-border); border-radius:10px; color:var(--admin-ink-muted);">Inbox is empty. No messages received yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = messages.map(m => `
+        <div style="background:var(--admin-white); border:1px solid var(--admin-border); border-left:4px solid ${m.status === 'unread' ? 'var(--admin-copper)' : 'var(--admin-sand)'}; border-radius:8px; padding:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; flex-wrap:wrap; gap:10px;">
+            <div>
+              <strong style="font-size:15px; color:var(--admin-ink);">${m.name}</strong>
+              <span style="font-size:12px; color:var(--admin-ink-muted); margin-left:8px;">&lt;${m.email}&gt; · ${m.phone || ''}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="tag-status ${m.status === 'unread' ? 'status-submitted' : 'status-completed'}">${m.status}</span>
+              <span style="font-size:11px; color:var(--admin-ink-muted);">${new Date(m.createdAt).toLocaleString()}</span>
+            </div>
+          </div>
+
+          <p style="font-size:13.5px; color:#393633; line-height:1.6; margin-bottom:14px; background:var(--admin-sand-light); padding:12px 14px; border-radius:6px;">
+            ${m.message}
+          </p>
+
+          ${(m.replies || []).map(r => `
+            <div style="margin-left:24px; padding:10px 14px; background:#FFF; border-left:2px solid var(--admin-copper); font-size:12.5px; margin-bottom:10px;">
+              <strong>Reply by ${r.sentBy}:</strong> ${r.text}
+              <div style="font-size:10px; color:var(--admin-ink-muted); margin-top:2px;">${new Date(r.sentAt).toLocaleString()}</div>
+            </div>
+          `).join('')}
+
+          <div style="display:flex; gap:10px;">
+            <a href="mailto:${m.email}?subject=Regarding your SGA Architecture Inquiry" class="admin-btn" style="padding:5px 12px; font-size:11.5px; width:auto;">
+              <i data-lucide="mail"></i> Email Reply
+            </a>
+            ${m.status === 'unread' ? `
+              <button class="mark-read-btn admin-btn" data-id="${m.id}" style="padding:5px 12px; font-size:11.5px; width:auto; background:var(--admin-sand); color:var(--admin-ink); border-color:var(--admin-border); box-shadow:none;">
+                Mark as Read
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      `).join('');
+
+      if (window.lucide) window.lucide.createIcons();
+
+      container.querySelectorAll('.mark-read-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          await adminApi.updateMessageStatus(btn.dataset.id, 'read');
+          await loadMessages();
+        });
+      });
+    }
+
+    initPage();
+  </script>
+</body>
+</html>

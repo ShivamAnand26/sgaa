@@ -1,0 +1,50 @@
+:root {
+  /* SGA.IN Design System Brand Tokens */
+  --white: #FFFFFF;
+  --ivory: #FAF8F5;
+  --sand: #EFE9E1;
+  --sand-light: #F7F4EF;
+  --ink: #1C1B1A;
+  --muted: #6F6A64;
+  --copper: #C47A3B;
+  --copper-hover: #B36B2E;
+  --copper-light: rgba(196, 122, 59, 0.08);
+  --copper-ring: rgba(196, 122, 59, 0.22);
+  --gold: #D9B77E;
+  --dark: #14110F;
+
+  /* Status Badge Colours (Muted, Architectural) */
+  --status-submitted: #6F6A64;
+  --status-submitted-bg: #F0ECE7;
+  --status-review: #B7892F;
+  --status-review-bg: #FAF3E5;
+  --status-approved: #3F7D5A;
+  --status-approved-bg: #EAF4EE;
+  --status-in-progress: #C47A3B;
+  --status-in-progress-bg: #FAF1E9;
+  --status-completed: #2F6B4F;
+  --status-completed-bg: #E8F3ED;
+  --status-rejected: #A44A3F;
+  --status-rejected-bg: #FAECEB;
+
+  /* Typography */
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Manrope", Arial, sans-serif;
+
+  /* Elevation and Radius */
+  --radius-card: 14px;
+  --radius-btn: 10px;
+  --radius-input: 10px;
+  --radius-pill: 999px;
+  --shadow-subtle: 0 4px 16px rgba(28, 27, 26, 0.03);
+  --shadow-card: 0 10px 30px rgba(28, 27, 26, 0.06);
+  --shadow-dropdown: 0 16px 40px rgba(28, 27, 26, 0.1);
+
+  /* Transitions */
+  --transition-smooth: 350ms cubic-bezier(0.22, 1, 0.36, 1);
+  --transition-fast: 200ms ease;
+
+  /* Dimensions */
+  --sidebar-width: 260px;
+  --header-height: 72px;
+}

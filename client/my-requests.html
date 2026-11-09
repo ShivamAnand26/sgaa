@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Requests — Shilp Griha Associate (SGA)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/portal.css">
+</head>
+<body class="portal-layout">
+
+  <!-- Left Sidebar -->
+  <aside class="portal-sidebar" id="portal-sidebar" aria-label="Portal Navigation">
+    <div class="sidebar-brand">
+      <a href="../index.html" class="brand-link" style="display:flex; flex-direction:column; gap:4px; text-decoration:none;">
+        <img src="/assets/logo-full.png" alt="Shilp Griha Associate" style="height:36px; width:auto; max-width:160px; object-fit:contain; display:block;">
+        <span style="display:block; font-size:9.5px; color:var(--copper); font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding-left:2px;">Client Portal</span>
+      </a>
+      <button type="button" class="sidebar-close" id="sidebar-close" aria-label="Close menu">&times;</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/>
+          <rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="new-request.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        <span>Submit Request</span>
+      </a>
+
+      <a href="my-requests.html" class="nav-item is-active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <span>My Requests</span>
+      </a>
+
+      <a href="notifications.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span>Notifications</span>
+        <span class="nav-badge" id="nav-notif-badge" style="display:none;">0</span>
+      </a>
+
+      <a href="profile.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>My Profile</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-mini-card">
+        <div class="user-avatar-circle" id="sidebar-avatar">C</div>
+        <div class="user-mini-info">
+          <span class="user-mini-name" id="user-display-name">Client</span>
+          <span class="user-mini-email" id="user-display-email">client@sga.in</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Wrap -->
+  <div class="portal-main">
+    <header class="portal-header">
+      <div class="header-left">
+        <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <h1 class="page-title">My Design Requests</h1>
+      </div>
+
+      <div class="header-actions">
+        <a href="new-request.html" class="btn btn-primary btn-sm">
+          + New Request
+        </a>
+        <a href="notifications.html" class="notif-bell-btn" aria-label="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="notif-badge" id="header-notif-badge" style="display:none;">0</span>
+        </a>
+        <a href="profile.html" class="header-user-btn" aria-label="Profile settings">
+          <div class="header-user-avatar" id="header-avatar">C</div>
+          <span class="header-user-name">Account</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="portal-content page-fade-in">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:28px; flex-wrap:wrap; gap:16px;">
+        <div>
+          <p class="section-label">Architectural Submissions</p>
+          <h2 style="font-size:32px; margin-top:4px;">Track Project Status</h2>
+        </div>
+      </div>
+
+      <!-- Toolbar: Search, Status, Type, Sort -->
+      <section class="requests-toolbar" aria-label="Search and filter requests">
+        <div class="search-box">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="requests-search" class="form-input" placeholder="Search by ID, title, or location...">
+        </div>
+
+        <div class="filter-actions">
+          <select id="filter-status" aria-label="Filter by Status">
+            <option value="all">All Statuses</option>
+            <option value="submitted">Submitted</option>
+            <option value="under_review">Under Review</option>
+            <option value="approved">Approved</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="rejected">Rejected / Cancelled</option>
+          </select>
+
+          <select id="filter-type" aria-label="Filter by Project Type">
+            <option value="all">All Project Types</option>
+            <option value="Residential Building">Residential Building</option>
+            <option value="Commercial Building">Commercial Building</option>
+            <option value="Interior Design">Interior Design</option>
+            <option value="Floor Planning">Floor Planning</option>
+            <option value="2D Planning">2D Planning</option>
+            <option value="3D Elevation">3D Elevation</option>
+            <option value="Other">Other</option>
+          </select>
+
+          <select id="filter-sort" aria-label="Sort Requests">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="title">Project Title</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Requests Table -->
+      <section class="table-container" aria-label="Design Requests Table">
+        <table class="requests-table">
+          <thead>
+            <tr>
+              <th scope="col" style="width:160px;">Request ID</th>
+              <th scope="col">Project Title</th>
+              <th scope="col" style="width:180px;">Project Type</th>
+              <th scope="col" style="width:160px;">Submitted</th>
+              <th scope="col" style="width:150px;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="requests-table-body">
+            <!-- Rendered by requests.js -->
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Pagination -->
+      <nav class="pagination" aria-label="Requests Pagination">
+        <span class="pagination-info" id="pagination-info">Showing 0 of 0 requests</span>
+        <div class="pagination-controls">
+          <button type="button" id="pagination-prev" class="btn btn-secondary btn-sm" disabled>&larr; Previous</button>
+          <button type="button" id="pagination-next" class="btn btn-secondary btn-sm" disabled>Next &rarr;</button>
+        </div>
+      </nav>
+    </main>
+  </div>
+
+  <script type="module">
+    import { initMyRequests } from './js/requests.js';
+    initMyRequests();
+  </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Studio Settings & Backup — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="margin-bottom:24px;">
+          <h1 style="font-family:var(--font-serif); font-size:32px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+            Studio Settings & Database Backup
+          </h1>
+          <p style="font-size:13.5px; color:var(--admin-ink-muted); margin-top:4px;">
+            Configure financial numbering prefixes, tax rates, studio profile, and export/import full JSON data backups.
+          </p>
+        </div>
+
+        <div style="max-width:800px; display:flex; flex-direction:column; gap:28px;">
+          <!-- Studio Financial Parameters -->
+          <form id="settings-form" style="background:var(--admin-white); border:1px solid var(--admin-border); border-radius:10px; padding:28px;">
+            <h2 style="font-family:var(--font-serif); font-size:22px; font-weight:600; margin-bottom:18px;">Financial & Invoicing Configuration</h2>
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="admin-form-group">
+                <label>GST Identification Number (GSTIN)</label>
+                <input type="text" id="set-gst-number" class="admin-input" value="07AAAAA0000A1Z5" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+              </div>
+              <div class="admin-form-group">
+                <label>Standard Architectural GST Rate (%)</label>
+                <input type="number" id="set-gst-rate" class="admin-input" value="18" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+              <div class="admin-form-group">
+                <label>Proposal Ref Prefix</label>
+                <input type="text" id="set-prop-prefix" class="admin-input" value="PROP-2026-" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+              </div>
+              <div class="admin-form-group">
+                <label>Invoice Ref Prefix</label>
+                <input type="text" id="set-inv-prefix" class="admin-input" value="INV-2026-" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+              </div>
+              <div class="admin-form-group">
+                <label>Receipt Ref Prefix</label>
+                <input type="text" id="set-rct-prefix" class="admin-input" value="RCT-2026-" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+              </div>
+            </div>
+
+            <button type="submit" class="admin-btn" style="width:auto; margin-top:14px;">
+              <span>Save Financial Settings</span>
+            </button>
+          </form>
+
+          <!-- Database Export & Backup -->
+          <div style="background:var(--admin-white); border:1px solid var(--admin-border); border-radius:10px; padding:28px;">
+            <h2 style="font-family:var(--font-serif); font-size:22px; font-weight:600; margin-bottom:8px;">Database Backup & Migration</h2>
+            <p style="font-size:13px; color:var(--admin-ink-muted); margin-bottom:18px;">
+              Download a complete JSON snapshot of all study notes, orders, student records, client requests, proposals, and audit logs.
+            </p>
+
+            <div style="display:flex; gap:14px; flex-wrap:wrap;">
+              <button id="export-backup-btn" class="admin-btn" style="width:auto;">
+                <i data-lucide="download"></i>
+                <span>Download Full Database Backup (.JSON)</span>
+              </button>
+
+              <label class="admin-btn" style="width:auto; background:var(--admin-sand); color:var(--admin-ink); border-color:var(--admin-border); box-shadow:none; cursor:pointer;">
+                <i data-lucide="upload"></i>
+                <span>Restore Database from File</span>
+                <input type="file" id="import-backup-file" accept="application/json" style="display:none;">
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    async function initPage() {
+      await initAdminShell('settings', 'Studio Settings');
+      const res = await adminApi.getSettings();
+      if (res.ok && res.data) {
+        const s = res.data;
+        if (s.gstNumber) document.getElementById('set-gst-number').value = s.gstNumber;
+        if (s.gstRatePercent) document.getElementById('set-gst-rate').value = s.gstRatePercent;
+        if (s.proposalPrefix) document.getElementById('set-prop-prefix').value = s.proposalPrefix;
+        if (s.invoicePrefix) document.getElementById('set-inv-prefix').value = s.invoicePrefix;
+        if (s.receiptPrefix) document.getElementById('set-rct-prefix').value = s.receiptPrefix;
+      }
+    }
+
+    document.getElementById('settings-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await adminApi.updateSettings({
+        gstNumber: document.getElementById('set-gst-number').value,
+        gstRatePercent: Number(document.getElementById('set-gst-rate').value) || 18,
+        proposalPrefix: document.getElementById('set-prop-prefix').value,
+        invoicePrefix: document.getElementById('set-inv-prefix').value,
+        receiptPrefix: document.getElementById('set-rct-prefix').value
+      });
+      alert('Studio configuration updated successfully!');
+    });
+
+    // Export Backup
+    document.getElementById('export-backup-btn').addEventListener('click', async () => {
+      const res = await adminApi.exportFullBackup();
+      if (!res.ok) return;
+      const json = JSON.stringify(res.data, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `SGA_Studio_Backup_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    // Import Backup
+    document.getElementById('import-backup-file').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      if (confirm('Restoring this backup will replace current collections. Proceed?')) {
+        const text = await file.text();
+        const res = await adminApi.importFullBackup(text);
+        if (res.ok) {
+          alert('Database restored successfully! Reloading...');
+          window.location.reload();
+        } else {
+          alert(res.error || 'Restore failed.');
+        }
+      }
+    });
+
+    initPage();
+  </script>
+</body>
+</html>

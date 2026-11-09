@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payments & Receipts — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 style="font-family:var(--font-serif); font-size:32px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+              Payments & Financial Records
+            </h1>
+            <p style="font-size:13.5px; color:var(--admin-ink-muted); margin-top:4px;">
+              Transaction receipts, gateway settlement records, and refund processing.
+            </p>
+          </div>
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Payment ID</th>
+                <th>Order Ref</th>
+                <th>Payer</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="payments-table-body">
+              <tr><td colspan="7" style="text-align:center; padding:30px; color:var(--admin-ink-muted);">Loading payments...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    let allPayments = [];
+
+    async function initPage() {
+      await initAdminShell('payments', 'Payments & Receipts');
+      await loadPayments();
+    }
+
+    async function loadPayments() {
+      const res = await adminApi.getPayments();
+      if (!res.ok) return;
+      allPayments = res.data;
+      renderTable(allPayments);
+    }
+
+    function renderTable(payments) {
+      const tbody = document.getElementById('payments-table-body');
+      if (payments.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:40px; color:var(--admin-ink-muted);">No payment records found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = payments.map(p => `
+        <tr>
+          <td><code style="color:var(--admin-copper); font-weight:700;">${p.id}</code></td>
+          <td><span style="font-size:12px; color:var(--admin-ink-muted);">${p.orderId}</span></td>
+          <td>
+            <strong style="display:block; font-size:13px; color:var(--admin-ink);">${p.studentName || 'Student'}</strong>
+            <span style="font-size:11px; color:var(--admin-ink-muted);">${p.studentEmail || ''}</span>
+          </td>
+          <td><strong style="color:var(--admin-ink); font-size:14px;">₹${(p.amount || 0).toLocaleString('en-IN')}</strong></td>
+          <td style="font-size:12.5px;">${p.method || 'UPI / Demo'}</td>
+          <td><span class="tag-status status-${p.status}">${p.status}</span></td>
+          <td>
+            <div style="display:flex; gap:8px;">
+              <button class="receipt-btn admin-btn" data-id="${p.id}" style="padding:4px 8px; font-size:11px; width:auto; background:var(--admin-sand); color:var(--admin-ink); border-color:var(--admin-border); box-shadow:none;">
+                Receipt PDF
+              </button>
+              ${p.status !== 'refunded' ? `
+                <button class="refund-btn admin-btn" data-id="${p.id}" style="padding:4px 8px; font-size:11px; width:auto; background:#FFEBEE; color:#C62828; border-color:#FFCDD2; box-shadow:none;">
+                  Refund
+                </button>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      // Bind Refund
+      tbody.querySelectorAll('.refund-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const reason = prompt('Please enter the reason for this refund:');
+          if (reason) {
+            await adminApi.processRefund(btn.dataset.id, null, reason);
+            await loadPayments();
+          }
+        });
+      });
+
+      // Bind Receipt PDF
+      tbody.querySelectorAll('.receipt-btn').forEach(btn => {
+        btn.addEventListener('click', () => downloadReceiptPdf(btn.dataset.id));
+      });
+    }
+
+    function downloadReceiptPdf(id) {
+      const p = allPayments.find(item => item.id === id);
+      if (!p || !window.jspdf) return;
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFillColor(28, 27, 26);
+      doc.rect(0, 0, 210, 32, 'F');
+      doc.setFont('times', 'bold');
+      doc.setFontSize(18);
+      doc.setTextColor(217, 183, 126);
+      doc.text('Shilp Griha Associate (SGA)', 18, 18);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      doc.setTextColor(239, 233, 225);
+      doc.text('Ar. Vikas Verma · ar.vikasverma0401@gmail.com · +91 79854 36965 · Gola Gokarnath', 18, 26);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(14);
+      doc.setTextColor(28, 27, 26);
+      doc.text('RECEIPT CONFIRMATION', 18, 48);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.text(`Receipt Ref: ${p.receiptNumber || ('RCT-' + p.id)}`, 18, 56);
+      doc.text(`Payment ID: ${p.id}`, 18, 62);
+      doc.text(`Order ID: ${p.orderId}`, 18, 68);
+      doc.text(`Payer: ${p.studentName || p.studentEmail}`, 18, 74);
+      doc.text(`Payment Date: ${new Date(p.createdAt).toLocaleString()}`, 18, 80);
+
+      doc.setDrawColor(217, 183, 126);
+      doc.line(18, 90, 192, 90);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.setTextColor(196, 122, 59);
+      doc.text(`Amount Received: INR ${(p.amount || 0).toLocaleString('en-IN')}`, 18, 102);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(100, 100, 100);
+      doc.text(`Status: ${p.status.toUpperCase()}`, 18, 110);
+
+      doc.save(`Receipt_${p.id}.pdf`);
+    }
+
+    initPage();
+  </script>
+</body>
+</html>

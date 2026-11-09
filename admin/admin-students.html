@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students CRM — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 style="font-family:var(--font-serif); font-size:32px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+              Architecture Students CRM
+            </h1>
+            <p style="font-size:13.5px; color:var(--admin-ink-muted); margin-top:4px;">
+              Enrolled architecture students, college affiliations, study note purchases, and manual access rights.
+            </p>
+          </div>
+          <div>
+            <span style="font-size:12.5px; color:var(--admin-ink-muted);">Total Enrolled: <strong id="students-total-count" style="color:var(--admin-ink);">0</strong></span>
+          </div>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <input type="text" id="student-search-input" placeholder="Search by student name, email, or architecture college..." class="admin-input" style="max-width:380px; padding:10px 14px 10px 38px; background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>College / University</th>
+                <th>Course & Year</th>
+                <th>Notes Owned</th>
+                <th>Joined</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="students-table-body">
+              <tr><td colspan="6" style="text-align:center; padding:30px; color:var(--admin-ink-muted);">Loading students...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    let allStudents = [];
+
+    async function initPage() {
+      await initAdminShell('students', 'Students CRM');
+      await loadStudents();
+    }
+
+    async function loadStudents() {
+      const res = await adminApi.getStudents();
+      if (!res.ok) return;
+      allStudents = res.data;
+      renderTable(allStudents);
+    }
+
+    function renderTable(students) {
+      document.getElementById('students-total-count').textContent = students.length;
+      const tbody = document.getElementById('students-table-body');
+
+      if (!students || students.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--admin-ink-muted);">No student records found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = students.map(s => `
+        <tr>
+          <td>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="width:32px; height:32px; border-radius:50%; background:var(--admin-sand); color:var(--admin-copper); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px;">
+                ${s.fullName ? s.fullName[0] : 'S'}
+              </div>
+              <div>
+                <strong style="display:block; font-size:13.5px; color:var(--admin-ink);">${s.fullName}</strong>
+                <span style="font-size:11px; color:var(--admin-ink-muted);">${s.email}</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div>${s.college || 'Architecture School'}</div>
+          </td>
+          <td>
+            <div>${s.course || 'B.Arch'}</div>
+            <span style="font-size:11px; color:var(--admin-ink-muted);">${s.year || 'Standard'}</span>
+          </td>
+          <td>
+            <span style="font-weight:700; color:var(--admin-copper);">${s.notesOwnedCount || 0}</span> notes
+          </td>
+          <td style="font-size:12px; color:var(--admin-ink-muted);">
+            ${new Date(s.createdAt || Date.now()).toLocaleDateString('en-IN', { month:'short', day:'numeric', year:'numeric' })}
+          </td>
+          <td>
+            <a href="admin-student-details.html?id=${s.id}" class="admin-btn" style="padding:5px 12px; font-size:11.5px; width:auto;">
+              Manage &rarr;
+            </a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    document.getElementById('student-search-input').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      const filtered = allStudents.filter(s => 
+        (s.fullName && s.fullName.toLowerCase().includes(q)) ||
+        (s.email && s.email.toLowerCase().includes(q)) ||
+        (s.college && s.college.toLowerCase().includes(q))
+      );
+      renderTable(filtered);
+    });
+
+    initPage();
+  </script>
+</body>
+</html>

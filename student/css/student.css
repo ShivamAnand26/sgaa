@@ -1,0 +1,813 @@
+@import "../../client/css/tokens.css";
+@import "../../client/css/base.css";
+@import "../../client/css/components.css";
+@import "../../client/css/portal.css";
+
+/* ========================================================
+   STUDENT PORTAL SPECIFIC STYLES (student.css)
+   ======================================================== */
+
+/* Header Search & Cart */
+.header-search {
+  position: relative;
+  width: 280px;
+  max-width: 100%;
+}
+
+.header-search input {
+  height: 40px;
+  padding-left: 38px;
+  font-size: 13px;
+  background: var(--sand-light);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-pill);
+}
+
+.header-search input:focus {
+  background: var(--white);
+  border-color: var(--copper);
+}
+
+.header-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.cart-icon-btn {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--sand);
+  display: grid;
+  place-items: center;
+  color: var(--ink);
+  transition: border-color 0.2s, background-color 0.2s;
+  background: var(--white);
+}
+
+.cart-icon-btn:hover {
+  border-color: var(--copper);
+  background-color: var(--sand-light);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--copper);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--white);
+}
+
+/* Quick Subjects Row */
+.subjects-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 24px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.subjects-row::-webkit-scrollbar {
+  display: none;
+}
+
+.subject-chip {
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--white);
+  border: 1px solid var(--sand);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.subject-chip:hover, .subject-chip.is-active {
+  background: var(--copper);
+  color: var(--white);
+  border-color: var(--copper);
+  box-shadow: 0 2px 8px rgba(196, 122, 59, 0.2);
+}
+
+.subject-chip-count {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+/* Notes Grid & Cards */
+.notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 22px;
+  margin-bottom: 32px;
+}
+
+.note-card {
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.28s ease, border-color 0.28s ease;
+  position: relative;
+}
+
+.note-card:hover {
+  transform: translateY(-4px) rotateX(1.5deg) rotateY(-1.5deg);
+  box-shadow: 0 16px 36px rgba(28, 27, 26, 0.09);
+  border-color: rgba(196, 122, 59, 0.4);
+}
+
+.note-card-cover {
+  height: 160px;
+  background: linear-gradient(135deg, #FAF8F5 0%, #EFE9E1 100%);
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-bottom: 1px solid var(--sand);
+  overflow: hidden;
+}
+
+.note-card-cover canvas, .note-card-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.note-cover-drafting {
+  position: absolute;
+  inset: 0;
+  opacity: 0.25;
+  background-size: 20px 20px;
+  background-image: 
+    linear-gradient(to right, rgba(196, 122, 59, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(196, 122, 59, 0.15) 1px, transparent 1px);
+}
+
+.note-cover-mark {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: var(--copper);
+}
+
+.note-cover-mark svg {
+  width: 44px;
+  height: 44px;
+}
+
+.note-cover-mark span {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Badges on cover */
+.note-badge-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--sand);
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.02em;
+}
+
+.note-wishlist-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--sand);
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 5;
+}
+
+.note-wishlist-btn:hover {
+  color: #A44A3F;
+  border-color: #A44A3F;
+  transform: scale(1.08);
+}
+
+.note-wishlist-btn.is-active {
+  color: #A44A3F;
+  background: #FFF5F5;
+}
+
+.note-card-body {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.note-meta-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.note-card-title {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.3;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.note-card-title a {
+  color: inherit;
+  transition: color 0.2s;
+}
+
+.note-card-title a:hover {
+  color: var(--copper);
+}
+
+.note-card-desc {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.55;
+  margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.note-card-footer {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--sand);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.note-price-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.note-price-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.note-price-amount {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
+.note-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Owned Badge */
+.badge-owned {
+  background: #E8F3ED;
+  color: #2F6B4F;
+  border: 1px solid rgba(47, 107, 79, 0.25);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Rating display */
+.rating-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--copper);
+  font-size: 12px;
+}
+
+.rating-count {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* Continue Reading Cards on Dashboard */
+.reading-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.reading-card {
+  background: var(--white);
+  border: 1px solid var(--sand);
+  border-radius: var(--radius-card);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.reading-card:hover {
+  border-color: var(--copper);
+  box-shadow: var(--shadow-card);
+}
+
+.progress-bar-wrap {
+  width: 100%;
+  height: 6px;
+  background: var(--sand-light);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--copper), var(--gold));
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+/* Note Details Page */
+.note-details-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.85fr);
+  gap: 32px;
+  align-items: start;
+}
+
+.note-details-cover-large {
+  width: 100%;
+  height: 320px;
+  border-radius: var(--radius-card);
+  background: linear-gradient(135deg, #FAF8F5, #EFE9E1);
+  border: 1px solid var(--sand);
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+
+.note-action-box {
+  position: sticky;
+  top: 90px;
+}
+
+.price-display-hero {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.included-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.included-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.included-list li svg {
+  color: var(--copper);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Note Viewer Screen */
+.viewer-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--header-height) - 10px);
+  background: #1C1B1A;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  border: 1px solid var(--sand);
+  position: relative;
+}
+
+.viewer-toolbar {
+  height: 52px;
+  background: #252321;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #FFFFFF;
+}
+
+.viewer-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.viewer-btn:hover:not(:disabled) {
+  background: rgba(196, 122, 59, 0.6);
+  border-color: var(--copper);
+}
+
+.viewer-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.viewer-body {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px;
+  gap: 20px;
+  position: relative;
+  user-select: none;
+}
+
+.pdf-page-canvas {
+  max-width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  background: #FFFFFF;
+  border-radius: 4px;
+}
+
+/* Watermark Layer */
+.watermark-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    -35deg,
+    transparent,
+    transparent 120px,
+    rgba(196, 122, 59, 0.04) 120px,
+    rgba(196, 122, 59, 0.04) 240px
+  );
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.watermark-text {
+  color: rgba(196, 122, 59, 0.12);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  transform: rotate(-30deg);
+  white-space: nowrap;
+}
+
+/* Locked Pages Prompt */
+.preview-locked-card {
+  width: 100%;
+  max-width: 580px;
+  background: rgba(30, 27, 25, 0.96);
+  border: 1px solid var(--copper);
+  border-radius: var(--radius-card);
+  padding: 36px 32px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  color: #FFFFFF;
+  margin: 20px 0;
+}
+
+/* Cart Page */
+.cart-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(300px, 0.8fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--sand);
+  background: var(--white);
+  gap: 16px;
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+/* Responsive Overrides & Touch Friendly Layouts */
+.browse-filter-bar {
+  display: grid;
+  grid-template-columns: minmax(200px, 1.4fr) repeat(3, minmax(130px, 1fr)) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.sticky-card {
+  position: sticky;
+  top: 86px;
+}
+
+/* Tablet Breakpoint (<= 1024px) */
+@media (max-width: 1024px) {
+  .note-details-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .note-action-box {
+    position: static;
+    margin-top: 16px;
+  }
+  .note-details-cover-large {
+    height: 250px;
+  }
+  .cart-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .sticky-card {
+    position: static !important;
+  }
+  .header-search {
+    width: 200px;
+  }
+  .browse-filter-bar {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .browse-filter-bar > div:first-child {
+    grid-column: 1 / -1;
+  }
+  .browse-filter-bar > div:last-child {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 8px;
+  }
+  .browse-filter-bar > div:last-child button {
+    flex: 1;
+  }
+}
+
+/* Tablet Portrait & Large Phones (<= 768px) */
+@media (max-width: 768px) {
+  .notes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .header-search {
+    display: none;
+  }
+  .reading-grid {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+  }
+  .viewer-toolbar {
+    padding: 0 12px;
+    height: 52px;
+    gap: 8px;
+  }
+  #viewer-title {
+    max-width: 160px !important;
+    font-size: 14px !important;
+  }
+  #viewer-fullscreen, #viewer-zoom-in, #viewer-zoom-out {
+    display: none !important;
+  }
+  .student-bottom-nav {
+    display: grid !important;
+  }
+  .portal-content {
+    padding-bottom: 84px !important;
+  }
+}
+
+/* Small Screens (<= 640px) */
+@media (max-width: 640px) {
+  .browse-filter-bar {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .cart-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .cart-item > div:last-child {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-top: 10px;
+    border-top: 1px dashed var(--sand);
+  }
+  .note-card-title {
+    font-size: 18px;
+  }
+  .dashboard-hero h2 {
+    font-size: clamp(23px, 6vw, 30px);
+  }
+}
+
+/* Compact Smartphones (<= 480px) */
+@media (max-width: 480px) {
+  .notes-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .reading-grid {
+    grid-template-columns: 1fr;
+  }
+  .note-card-cover {
+    height: 140px;
+  }
+  .note-details-cover-large {
+    height: 180px;
+  }
+  .price-display-hero {
+    font-size: 28px;
+  }
+  .viewer-toolbar {
+    padding: 0 8px;
+    font-size: 11px;
+    height: 48px;
+  }
+  #viewer-title {
+    max-width: 110px !important;
+    font-size: 13px !important;
+  }
+  #viewer-page-indicator {
+    min-width: 60px !important;
+    font-size: 11.5px !important;
+  }
+  .viewer-btn {
+    padding: 6px 8px;
+  }
+  .pdf-page-canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+  .preview-locked-card {
+    padding: 24px 18px;
+    margin: 12px 0;
+  }
+  .preview-locked-card h3 {
+    font-size: 20px;
+  }
+}
+
+/* Very Narrow Phones (<= 360px) */
+@media (max-width: 360px) {
+  .page-title, .topbar-title {
+    font-size: 15px;
+    max-width: 110px;
+  }
+  .subject-chip {
+    padding: 6px 12px;
+    font-size: 11.5px;
+  }
+  .note-card-body {
+    padding: 14px 16px;
+  }
+}
+
+/* Student Mobile Bottom Nav */
+.student-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  height: 58px;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--sand);
+  box-shadow: 0 -4px 20px rgba(28, 27, 26, 0.06);
+  grid-template-columns: repeat(5, 1fr);
+  align-items: center;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 100%;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 10px;
+  font-weight: 600;
+  transition: color 0.2s ease;
+  position: relative;
+  min-height: 48px;
+}
+
+.bottom-nav-item.is-active, .bottom-nav-item:hover {
+  color: var(--copper);
+}
+
+.bottom-nav-item svg {
+  width: 20px;
+  height: 20px;
+}
+
+.bottom-nav-badge {
+  position: absolute;
+  top: 5px;
+  right: calc(50% - 15px);
+  min-width: 15px;
+  height: 15px;
+  border-radius: var(--radius-pill);
+  background: var(--copper);
+  color: var(--white);
+  font-size: 9px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  padding: 0 3px;
+  border: 1.5px solid var(--white);
+}
+

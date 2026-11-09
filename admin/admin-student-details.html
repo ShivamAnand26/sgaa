@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Profile & Access — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .student-layout {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .student-layout { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--admin-white);
+      border: 1px solid var(--admin-border);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="margin-bottom:20px;">
+          <a href="admin-students.html" style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color:var(--admin-copper); font-weight:600;">
+            <i data-lucide="arrow-left" style="width:14px; height:14px;"></i>
+            <span>Back to All Students</span>
+          </a>
+        </div>
+
+        <div class="student-layout">
+          <!-- Left: Owned Notes & Purchases -->
+          <div>
+            <!-- Header Panel -->
+            <div class="panel">
+              <div style="display:flex; align-items:center; gap:16px;">
+                <div style="width:54px; height:54px; border-radius:50%; background:var(--admin-sand); color:var(--admin-copper); display:flex; align-items:center; justify-content:center; font-family:var(--font-serif); font-size:24px; font-weight:700;">
+                  <span id="student-initial">S</span>
+                </div>
+                <div>
+                  <h1 id="student-name" style="font-family:var(--font-serif); font-size:28px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+                    Student Name
+                  </h1>
+                  <p id="student-college-line" style="font-size:13px; color:var(--admin-ink-muted); margin-top:4px;">
+                    Architecture Student
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Library & Manual Access Granting -->
+            <div class="panel">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+                <h3 style="font-family:var(--font-serif); font-size:20px; font-weight:600;">Unlocked Study Notes Library</h3>
+                <div style="display:flex; gap:10px;">
+                  <select id="grant-note-select" class="admin-input" style="padding:6px 10px; width:auto; font-size:12px; background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+                    <option value="">-- Grant Manual Access to Note --</option>
+                  </select>
+                  <button id="grant-btn" class="admin-btn" style="padding:6px 12px; font-size:11.5px; width:auto;">
+                    + Grant Access
+                  </button>
+                </div>
+              </div>
+
+              <div id="owned-notes-list" style="display:flex; flex-direction:column; gap:10px;">
+                <p style="font-size:12.5px; color:var(--admin-ink-muted);">Loading owned notes...</p>
+              </div>
+            </div>
+
+            <!-- Order History -->
+            <div class="panel">
+              <h3 style="font-family:var(--font-serif); font-size:20px; font-weight:600; margin-bottom:14px;">Order History</h3>
+              <div class="data-table-wrap">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                    </tr>
+                  </thead>
+                  <tbody id="orders-tbody">
+                    <tr><td colspan="4" style="text-align:center; padding:20px; color:var(--admin-ink-muted);">No orders recorded.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Security, Reset Codes & Remarks -->
+          <div>
+            <!-- One-time Password Reset Code -->
+            <div class="panel">
+              <h3 style="font-family:var(--font-serif); font-size:19px; font-weight:600; margin-bottom:12px;">Temporary Reset Code</h3>
+              <p style="font-size:12px; color:var(--admin-ink-muted); margin-bottom:14px; line-height:1.5;">
+                Generate a temporary 6-digit verification code to assist a student who cannot access their email.
+              </p>
+              <button id="gen-reset-btn" class="admin-btn" style="width:100%;">
+                <i data-lucide="key" style="width:14px; height:14px;"></i>
+                <span>Generate 6-Digit Reset Code</span>
+              </button>
+
+              <div id="reset-code-box" style="display:none; margin-top:14px; background:#F4EFEA; border:1px dashed var(--admin-copper); padding:14px; border-radius:8px; text-align:center;">
+                <span style="font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--admin-ink-muted); display:block; margin-bottom:4px;">One-Time Reset Code</span>
+                <span id="reset-code-val" style="font-size:24px; font-weight:700; letter-spacing:0.15em; color:var(--admin-copper); font-family:monospace;">000000</span>
+                <span style="font-size:11px; color:#A39D95; display:block; margin-top:4px;">Valid for 24 hours</span>
+              </div>
+            </div>
+
+            <!-- Internal Admin Remarks -->
+            <div class="panel">
+              <h3 style="font-family:var(--font-serif); font-size:19px; font-weight:600; margin-bottom:12px;">Admin Remarks & Notes</h3>
+              <div class="admin-form-group">
+                <textarea id="remark-text" rows="2" class="admin-input" placeholder="Add note regarding academic verification or payment..." style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink); height:auto;"></textarea>
+              </div>
+              <button id="add-remark-btn" class="admin-btn" style="padding:6px 12px; font-size:11.5px; width:auto; background:var(--admin-sand); color:var(--admin-ink); border-color:var(--admin-border); box-shadow:none;">
+                + Save Remark
+              </button>
+
+              <div id="student-remarks-list" style="margin-top:16px; display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const studentId = params.get('id');
+
+    async function initPage() {
+      await initAdminShell('students', 'Student Details');
+      if (!studentId) {
+        window.location.href = 'admin-students.html';
+        return;
+      }
+      await loadData();
+      await populateNoteOptions();
+    }
+
+    async function loadData() {
+      const res = await adminApi.getStudentDetails(studentId);
+      if (!res.ok) {
+        alert(res.error || 'Student not found');
+        return;
+      }
+      const { student, purchases, orders } = res.data;
+
+      document.getElementById('student-initial').textContent = student.fullName ? student.fullName[0] : 'S';
+      document.getElementById('student-name').textContent = student.fullName;
+      document.getElementById('student-college-line').textContent = `${student.email} · ${student.college || 'Architecture'} (${student.year || '4th Year'})`;
+
+      // Owned notes
+      const list = document.getElementById('owned-notes-list');
+      if (!purchases || purchases.length === 0) {
+        list.innerHTML = `<p style="font-size:12.5px; color:var(--admin-ink-muted);">No study notes unlocked yet for this student.</p>`;
+      } else {
+        list.innerHTML = purchases.map(p => `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--admin-sand-light); border:1px solid var(--admin-sand); border-radius:8px;">
+            <div>
+              <strong style="font-size:13.5px; color:var(--admin-ink); display:block;">${p.noteTitle}</strong>
+              <span style="font-size:11px; color:var(--admin-ink-muted);">Ref: ${p.id} · Unlocked on ${new Date(p.purchasedAt).toLocaleDateString()}</span>
+            </div>
+            <button class="revoke-btn admin-btn" data-note="${p.noteId}" style="padding:4px 10px; font-size:11px; width:auto; background:#FFEBEE; color:#C62828; border-color:#FFCDD2; box-shadow:none;">
+              Revoke
+            </button>
+          </div>
+        `).join('');
+
+        list.querySelectorAll('.revoke-btn').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            if (confirm('Revoke student access to this study note?')) {
+              await adminApi.revokeNoteAccess(studentId, btn.dataset.note);
+              await loadData();
+            }
+          });
+        });
+      }
+
+      // Orders
+      const tbody = document.getElementById('orders-tbody');
+      if (!orders || orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--admin-ink-muted);">No orders recorded.</td></tr>`;
+      } else {
+        tbody.innerHTML = orders.map(o => `
+          <tr>
+            <td><code style="color:var(--admin-copper);">${o.id}</code></td>
+            <td><strong>₹${(o.totalAmount || 0).toLocaleString('en-IN')}</strong></td>
+            <td><span class="tag-status status-${o.status}">${o.status}</span></td>
+            <td style="font-size:12px; color:var(--admin-ink-muted);">${new Date(o.createdAt).toLocaleDateString()}</td>
+          </tr>
+        `).join('');
+      }
+
+      // Remarks
+      renderRemarks(student.adminRemarks || []);
+    }
+
+    async function populateNoteOptions() {
+      const res = await adminApi.getNotes();
+      if (!res.ok) return;
+      const select = document.getElementById('grant-note-select');
+      res.data.forEach(n => {
+        const opt = document.createElement('option');
+        opt.value = n.id;
+        opt.textContent = `${n.title} (₹${n.price})`;
+        select.appendChild(opt);
+      });
+    }
+
+    // Grant access button
+    document.getElementById('grant-btn').addEventListener('click', async () => {
+      const select = document.getElementById('grant-note-select');
+      const noteId = select.value;
+      if (!noteId) {
+        alert('Please select a study note first.');
+        return;
+      }
+      const res = await adminApi.grantNoteAccess(studentId, noteId);
+      if (!res.ok) {
+        alert(res.error || 'Failed to grant access');
+        return;
+      }
+      select.value = '';
+      await loadData();
+    });
+
+    // Generate reset code
+    document.getElementById('gen-reset-btn').addEventListener('click', async () => {
+      const res = await adminApi.generateStudentResetCode(studentId);
+      if (!res.ok) return;
+      document.getElementById('reset-code-val').textContent = res.data.resetCode;
+      document.getElementById('reset-code-box').style.display = 'block';
+    });
+
+    // Add remark
+    document.getElementById('add-remark-btn').addEventListener('click', async () => {
+      const text = document.getElementById('remark-text').value.trim();
+      if (!text) return;
+      await adminApi.addStudentRemark(studentId, text);
+      document.getElementById('remark-text').value = '';
+      await loadData();
+    });
+
+    function renderRemarks(remarks) {
+      const wrap = document.getElementById('student-remarks-list');
+      if (remarks.length === 0) {
+        wrap.innerHTML = `<p style="font-size:11.5px; color:var(--admin-ink-muted);">No remarks saved.</p>`;
+        return;
+      }
+      wrap.innerHTML = remarks.map(r => `
+        <div style="background:var(--admin-sand-light); border:1px solid var(--admin-sand); padding:8px 10px; border-radius:6px; font-size:12px;">
+          <div>${r.text}</div>
+          <div style="font-size:10px; color:var(--admin-ink-muted); margin-top:3px;">${r.adminName} · ${new Date(r.createdAt).toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+
+    initPage();
+  </script>
+</body>
+</html>

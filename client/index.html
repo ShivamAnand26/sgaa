@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shilp Griha Associate (SGA) — Client Portal</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <script type="module">
+    import { api } from './js/api.js';
+
+    const token = localStorage.getItem('sga_auth_token') || sessionStorage.getItem('sga_auth_token');
+    if (!token) {
+      setTimeout(() => window.location.replace('login.html'), 400);
+    } else {
+      api.getMe().then(res => {
+        if (res.ok && res.data) {
+          window.location.replace('dashboard.html');
+        } else {
+          window.location.replace('login.html');
+        }
+      }).catch(() => {
+        window.location.replace('login.html');
+      });
+    }
+  </script>
+</head>
+<body style="background:#FAF8F5; margin:0; display:flex; align-items:center; justify-content:center; height:100vh;">
+  <div class="sga-loader-overlay sga-loader-active" style="background:#FAF8F5;">
+    <div class="sga-loader-content">
+      <div class="sga-loader-halo"></div>
+      <div class="sga-loader-logo-wrap" style="width:auto; height:auto;">
+        <img src="/assets/logo-full.png" alt="Shilp Griha Associate" class="sga-loader-logo" style="max-height:55px; width:auto; border-radius:0; box-shadow:none;">
+      </div>
+      <div class="sga-loader-caption">Shilp Griha Associate · Client Portal</div>
+      <div class="sga-loader-bar"><div class="sga-loader-bar-progress"></div></div>
+    </div>
+  </div>
+</body>
+</html>

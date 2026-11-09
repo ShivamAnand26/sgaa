@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Testimonials & Reviews — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 style="font-family:var(--font-serif); font-size:32px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+              Client & Student Testimonials
+            </h1>
+            <p style="font-size:13.5px; color:var(--admin-ink-muted); margin-top:4px;">
+              Manage reviews displayed across the studio landing page.
+            </p>
+          </div>
+          <button id="add-test-btn" class="admin-btn" style="width:auto;">
+            <i data-lucide="plus"></i>
+            <span>Add Testimonial</span>
+          </button>
+        </div>
+
+        <div id="testimonials-container" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:20px;"></div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    let list = [];
+
+    async function initPage() {
+      await initAdminShell('testimonials', 'Testimonials');
+      await loadList();
+    }
+
+    async function loadList() {
+      const res = await adminApi.getTestimonials();
+      if (!res.ok) return;
+      list = res.data;
+      render(list);
+    }
+
+    function render(items) {
+      const wrap = document.getElementById('testimonials-container');
+      if (items.length === 0) {
+        wrap.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; background:var(--admin-white); border:1px solid var(--admin-border); border-radius:10px; color:var(--admin-ink-muted);">No testimonials saved. Click "+ Add Testimonial".</div>`;
+        return;
+      }
+
+      wrap.innerHTML = items.map(t => `
+        <article style="background:var(--admin-white); border:1px solid var(--admin-border); border-radius:10px; padding:22px; display:flex; flex-direction:column;">
+          <p style="font-family:var(--font-serif); font-size:16px; font-style:italic; color:var(--admin-ink); line-height:1.5; margin-bottom:16px;">
+            "${t.quote}"
+          </p>
+          <div style="margin-top:auto; padding-top:14px; border-top:1px solid var(--admin-border-subtle); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong style="display:block; font-size:13px; color:var(--admin-ink);">${t.name}</strong>
+              <span style="font-size:11px; color:var(--admin-ink-muted);">${t.role}</span>
+            </div>
+            <button class="del-btn admin-btn" data-id="${t.id}" style="padding:4px 8px; font-size:11px; width:auto; background:#FFEBEE; color:#C62828; border-color:#FFCDD2; box-shadow:none;">
+              Delete
+            </button>
+          </div>
+        </article>
+      `).join('');
+
+      wrap.querySelectorAll('.del-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (confirm('Delete testimonial?')) {
+            await adminApi.deleteTestimonial(btn.dataset.id);
+            await loadList();
+          }
+        });
+      });
+    }
+
+    document.getElementById('add-test-btn').addEventListener('click', async () => {
+      const name = prompt('Client / Student Name:');
+      if (!name) return;
+      const role = prompt('Role / Project (e.g. Residential Client / CEPT Student):', 'Residential Client');
+      if (!role) return;
+      const quote = prompt('Testimonial Quote:');
+      if (!quote) return;
+
+      await adminApi.saveTestimonial({ name, role, quote, active: true });
+      await loadList();
+    });
+
+    initPage();
+  </script>
+</body>
+</html>

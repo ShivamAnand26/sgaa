@@ -1,0 +1,111 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered user of SGA.IN (Client, Student, or Admin)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "fullName": { "type": "string" },
+        "role": { "type": "string", "enum": ["client", "student", "admin"] },
+        "phone": { "type": "string" },
+        "college": { "type": "string" },
+        "course": { "type": "string" },
+        "year": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "email", "role", "fullName", "createdAt"]
+    },
+    "Request": {
+      "title": "Design Request",
+      "description": "Architectural project planning request submitted by a client",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "clientId": { "type": "string" },
+        "clientName": { "type": "string" },
+        "clientEmail": { "type": "string" },
+        "title": { "type": "string" },
+        "projectType": { "type": "string" },
+        "siteLocation": { "type": "string" },
+        "plotAreaSqFt": { "type": "number" },
+        "budgetMin": { "type": "number" },
+        "budgetMax": { "type": "number" },
+        "status": { "type": "string", "enum": ["submitted", "under_review", "approved", "in_progress", "completed", "rejected"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "clientId", "title", "status", "createdAt"]
+    },
+    "Note": {
+      "title": "Study Note",
+      "description": "Architectural study note available for preview and purchase",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "subject": { "type": "string" },
+        "category": { "type": "string" },
+        "price": { "type": "number" },
+        "pageCount": { "type": "number" },
+        "previewPages": { "type": "number" },
+        "description": { "type": "string" },
+        "status": { "type": "string", "enum": ["published", "draft", "archived"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "price", "status", "createdAt"]
+    },
+    "Order": {
+      "title": "Purchase Order",
+      "description": "Completed study note checkout purchase record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" },
+        "studentEmail": { "type": "string" },
+        "studentName": { "type": "string" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "studentId", "totalAmount", "status", "createdAt"]
+    },
+    "Proposal": {
+      "title": "Architectural Proposal",
+      "description": "Formal fee quote and milestone schedule for a design request",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "requestId": { "type": "string" },
+        "clientId": { "type": "string" },
+        "title": { "type": "string" },
+        "totalAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["draft", "sent", "accepted", "rejected", "revision_requested"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "requestId", "clientId", "totalAmount", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles and credentials metadata"
+    },
+    "/requests/{requestId}": {
+      "schema": { "$ref": "#/entities/Request" },
+      "description": "Client architectural design project briefs"
+    },
+    "/notes/{noteId}": {
+      "schema": { "$ref": "#/entities/Note" },
+      "description": "Published study notes catalog"
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Student notes purchases and invoices"
+    },
+    "/proposals/{proposalId}": {
+      "schema": { "$ref": "#/entities/Proposal" },
+      "description": "Architectural project proposals and milestone payments"
+    }
+  }
+}

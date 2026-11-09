@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Saved Notes & Wishlist — SGA.IN Student Portal</title>
+  <meta name="description" content="View and manage your saved architectural study notes, move items to cart, or explore syllabus guides.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M7 30 32 8l25 22M16 36l31-9' fill='none' stroke='%23C47A3B' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../client/css/tokens.css">
+  <link rel="stylesheet" href="../client/css/base.css">
+  <link rel="stylesheet" href="../client/css/components.css">
+  <link rel="stylesheet" href="../client/css/portal.css">
+  <link rel="stylesheet" href="css/student.css">
+</head>
+<body class="portal-layout">
+
+  <!-- Left Sidebar -->
+  <aside class="portal-sidebar" id="portal-sidebar" aria-label="Student Navigation">
+    <div class="sidebar-brand">
+      <a href="../index.html" class="brand-link" style="display:flex; flex-direction:column; gap:4px; text-decoration:none;">
+        <img src="/assets/logo-full.png" alt="Shilp Griha Associate" style="height:36px; width:auto; max-width:180px; object-fit:contain; display:block;">
+        <span style="display:block; font-size:9.5px; color:var(--copper); font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding-left:2px;">Student Portal</span>
+      </a>
+      <button type="button" class="sidebar-close" id="sidebar-close" aria-label="Close menu">&times;</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="student-dashboard.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/>
+          <rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="browse-notes.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <span>Browse Notes</span>
+      </a>
+
+      <a href="my-purchases.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <span>My Purchases</span>
+      </a>
+
+      <a href="payment-history.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+        <span>Payment History</span>
+      </a>
+
+      <a href="wishlist.html" class="nav-item is-active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span>Wishlist</span>
+      </a>
+
+      <a href="student-notifications.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+        </svg>
+        <span>Notifications</span>
+        <span class="nav-badge" id="notif-count-badge" style="display:none;">0</span>
+      </a>
+
+      <a href="student-profile.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="8" r="4"/><path d="M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/>
+        </svg>
+        <span>My Profile</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-chip-avatar" id="sidebar-avatar">S</div>
+        <div class="user-chip-meta">
+          <span class="user-chip-name" id="user-display-name">Loading...</span>
+          <span class="user-chip-email" id="user-display-email">...</span>
+        </div>
+      </div>
+      <button type="button" class="btn btn-secondary btn-sm" id="logout-btn" style="width:100%; margin-top:12px;">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="portal-main">
+    <header class="portal-topbar">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button type="button" class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+        <span class="topbar-title">Saved Notes</span>
+      </div>
+
+      <div class="topbar-actions">
+        <!-- Cart -->
+        <a href="cart.html" class="btn btn-secondary btn-sm" style="display:inline-flex; align-items:center; gap:8px; position:relative;" aria-label="Shopping Cart">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
+            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
+          </svg>
+          <span class="cart-badge-counter" id="cart-count-badge" style="display:none;">0</span>
+          <span class="hide-mobile">Cart</span>
+        </a>
+
+        <!-- Notifications -->
+        <a href="student-notifications.html" class="btn btn-secondary btn-sm" style="position:relative;" aria-label="Notifications">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+          </svg>
+        </a>
+
+        <!-- Profile Avatar -->
+        <a href="student-profile.html" class="user-chip-avatar" id="header-avatar" style="text-decoration:none;">S</a>
+      </div>
+    </header>
+
+    <main class="portal-content">
+      <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+        <div>
+          <span class="page-eyebrow">Bookmarks & Reading List</span>
+          <h1 class="page-title">Saved Architectural Notes</h1>
+          <p class="page-desc" id="wishlist-count" style="margin-top:4px;">Loading saved notes...</p>
+        </div>
+
+        <a href="browse-notes.html" class="btn btn-secondary btn-sm">
+          + Explore More Notes
+        </a>
+      </div>
+
+      <!-- Wishlist Grid -->
+      <section id="wishlist-container" class="notes-grid" aria-label="Saved notes">
+        <div class="skeleton" style="height:280px; grid-column:1/-1;"></div>
+      </section>
+
+      <!-- Empty State -->
+      <div id="wishlist-empty" class="empty-state" style="display:none; background:#FFFFFF; border:1px solid var(--sand); border-radius:14px; padding:60px 24px; text-align:center;">
+        <div class="empty-state-icon" style="margin:0 auto 16px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+          </svg>
+        </div>
+        <h3 class="empty-state-title">Your wishlist is currently empty</h3>
+        <p class="empty-state-desc" style="max-width:420px; margin:0 auto 20px;">
+          Click the bookmark icon on any study note in the catalog to save it to your personal reading list.
+        </p>
+        <a href="browse-notes.html" class="btn btn-primary">Browse Study Notes Catalog &rarr;</a>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Tab Navigation -->
+  <nav class="student-bottom-nav" aria-label="Mobile Navigation">
+    <a href="student-dashboard.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+      <span>Dashboard</span>
+    </a>
+    <a href="browse-notes.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span>Browse</span>
+    </a>
+    <a href="my-purchases.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Purchases</span>
+    </a>
+    <a href="cart.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <span>Cart</span>
+      <span class="bottom-nav-badge" id="bottom-cart-badge" style="display:none;">0</span>
+    </a>
+    <a href="student-profile.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <script type="module">
+    import { initWishlist } from './js/student-library.js';
+    initWishlist();
+  </script>
+</body>
+</html>

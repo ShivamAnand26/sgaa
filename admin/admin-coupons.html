@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discount Coupons — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 style="font-family:var(--font-serif); font-size:32px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+              Promotional Coupons & Discounts
+            </h1>
+            <p style="font-size:13.5px; color:var(--admin-ink-muted); margin-top:4px;">
+              Manage student checkout promotional codes, percentage deductions, and usage counters.
+            </p>
+          </div>
+          <button id="add-coupon-btn" class="admin-btn" style="width:auto;">
+            <i data-lucide="plus"></i>
+            <span>Create Promo Coupon</span>
+          </button>
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Coupon Code</th>
+                <th>Discount Type & Value</th>
+                <th>Min Order Value</th>
+                <th>Redemptions</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="coupons-table-body">
+              <tr><td colspan="6" style="text-align:center; padding:30px; color:var(--admin-ink-muted);">Loading coupons...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    let allCoupons = [];
+
+    async function initPage() {
+      await initAdminShell('coupons', 'Coupons & Discounts');
+      await loadCoupons();
+    }
+
+    async function loadCoupons() {
+      const res = await adminApi.getCoupons();
+      if (!res.ok) return;
+      allCoupons = res.data;
+      renderTable(allCoupons);
+    }
+
+    function renderTable(coupons) {
+      const tbody = document.getElementById('coupons-table-body');
+      if (coupons.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--admin-ink-muted);">No coupons created yet. Click "+ Create Promo Coupon".</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = coupons.map(c => `
+        <tr>
+          <td><code style="font-size:14px; font-weight:700; color:var(--admin-copper); background:var(--admin-sand-light); padding:4px 8px; border-radius:4px; border:1px solid var(--admin-sand);">${c.code}</code></td>
+          <td>
+            <strong>${c.discountType === 'percent' ? `${c.discountValue}% OFF` : `₹${c.discountValue} FLAT OFF`}</strong>
+          </td>
+          <td>₹${(c.minOrderValue || 0).toLocaleString('en-IN')}</td>
+          <td>${c.usedCount || 0} times</td>
+          <td>
+            <span class="tag-status ${c.active ? 'status-completed' : 'status-rejected'}">
+              ${c.active ? 'Active' : 'Disabled'}
+            </span>
+          </td>
+          <td>
+            <div style="display:flex; gap:8px;">
+              <button class="toggle-btn admin-btn" data-id="${c.id}" style="padding:4px 8px; font-size:11px; width:auto; background:var(--admin-sand); color:var(--admin-ink); border-color:var(--admin-border); box-shadow:none;">
+                ${c.active ? 'Disable' : 'Enable'}
+              </button>
+              <button class="del-btn admin-btn" data-id="${c.id}" style="padding:4px 8px; font-size:11px; width:auto; background:#FFEBEE; color:#C62828; border-color:#FFCDD2; box-shadow:none;">
+                Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      tbody.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const coupon = allCoupons.find(c => c.id === btn.dataset.id);
+          if (coupon) {
+            await adminApi.updateCoupon(coupon.id, { active: !coupon.active });
+            await loadCoupons();
+          }
+        });
+      });
+
+      tbody.querySelectorAll('.del-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (confirm('Delete this coupon?')) {
+            await adminApi.deleteCoupon(btn.dataset.id);
+            await loadCoupons();
+          }
+        });
+      });
+    }
+
+    document.getElementById('add-coupon-btn').addEventListener('click', async () => {
+      const code = prompt('Enter coupon code (e.g. ARCH25):');
+      if (!code) return;
+      const discount = prompt('Enter discount percentage (e.g. 25):', '20');
+      if (!discount) return;
+
+      await adminApi.createCoupon({
+        code: code.trim().toUpperCase(),
+        discountType: 'percent',
+        discountValue: Number(discount) || 20,
+        minOrderValue: 400
+      });
+      await loadCoupons();
+    });
+
+    initPage();
+  </script>
+</body>
+</html>

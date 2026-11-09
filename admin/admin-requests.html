@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Requests & Pipeline — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .view-toggle-btn {
+      padding: 6px 14px;
+      border: 1px solid var(--admin-border);
+      background: var(--admin-white);
+      color: var(--admin-ink-muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .view-toggle-btn.active {
+      background: #181513;
+      color: var(--admin-gold);
+      border-color: #181513;
+    }
+
+    /* Kanban Styles */
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(260px, 1fr));
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 24px;
+      min-height: 580px;
+    }
+    .kanban-col {
+      background: #F4EFEA;
+      border: 1px solid var(--admin-border);
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      max-height: calc(100vh - 220px);
+    }
+    .kanban-col-head {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--admin-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .kanban-col-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--admin-ink);
+    }
+    .kanban-badge {
+      background: var(--admin-white);
+      border: 1px solid var(--admin-border);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--admin-copper);
+    }
+    .kanban-cards-wrap {
+      padding: 12px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-height: 200px;
+    }
+    .kanban-cards-wrap.dragover {
+      background: rgba(196, 122, 59, 0.08);
+      border: 2px dashed var(--admin-copper);
+      border-radius: 6px;
+    }
+    .kanban-card {
+      background: var(--admin-white);
+      border: 1px solid var(--admin-border);
+      border-radius: 8px;
+      padding: 14px;
+      cursor: grab;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      transition: all 0.2s ease;
+    }
+    .kanban-card:active { cursor: grabbing; }
+    .kanban-card:hover {
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      border-color: var(--admin-gold);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 style="font-family:var(--font-serif); font-size:32px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+              Architectural Design Requests
+            </h1>
+            <p style="font-size:13.5px; color:var(--admin-ink-muted); margin-top:4px;">
+              Manage incoming architectural planning briefs, review contours & bye-laws, and track milestones.
+            </p>
+          </div>
+          <div style="display:flex; gap:10px;">
+            <button id="view-kanban-btn" class="view-toggle-btn active">
+              <i data-lucide="columns"></i> Kanban Pipeline
+            </button>
+            <button id="view-table-btn" class="view-toggle-btn">
+              <i data-lucide="table"></i> Table List
+            </button>
+          </div>
+        </div>
+
+        <!-- Kanban Board View -->
+        <div id="kanban-view" class="kanban-board">
+          <!-- 1. Submitted -->
+          <div class="kanban-col" data-status="submitted">
+            <div class="kanban-col-head">
+              <span class="kanban-col-title">Submitted</span>
+              <span class="kanban-badge" id="count-submitted">0</span>
+            </div>
+            <div class="kanban-cards-wrap" id="col-submitted" data-col="submitted"></div>
+          </div>
+
+          <!-- 2. Under Review -->
+          <div class="kanban-col" data-status="under_review">
+            <div class="kanban-col-head">
+              <span class="kanban-col-title">Under Review</span>
+              <span class="kanban-badge" id="count-under_review">0</span>
+            </div>
+            <div class="kanban-cards-wrap" id="col-under_review" data-col="under_review"></div>
+          </div>
+
+          <!-- 3. Approved -->
+          <div class="kanban-col" data-status="approved">
+            <div class="kanban-col-head">
+              <span class="kanban-col-title">Approved</span>
+              <span class="kanban-badge" id="count-approved">0</span>
+            </div>
+            <div class="kanban-cards-wrap" id="col-approved" data-col="approved"></div>
+          </div>
+
+          <!-- 4. In Progress -->
+          <div class="kanban-col" data-status="in_progress">
+            <div class="kanban-col-head">
+              <span class="kanban-col-title">In Progress</span>
+              <span class="kanban-badge" id="count-in_progress">0</span>
+            </div>
+            <div class="kanban-cards-wrap" id="col-in_progress" data-col="in_progress"></div>
+          </div>
+
+          <!-- 5. Completed -->
+          <div class="kanban-col" data-status="completed">
+            <div class="kanban-col-head">
+              <span class="kanban-col-title">Completed</span>
+              <span class="kanban-badge" id="count-completed">0</span>
+            </div>
+            <div class="kanban-cards-wrap" id="col-completed" data-col="completed"></div>
+          </div>
+        </div>
+
+        <!-- Table List View (Hidden by default) -->
+        <div id="table-view" style="display:none;">
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Request ID & Project</th>
+                  <th>Client</th>
+                  <th>Plot & Location</th>
+                  <th>Estimated Budget</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="table-body">
+                <tr><td colspan="6" style="text-align:center; padding:30px; color:var(--admin-ink-muted);">Loading requests...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    let allRequests = [];
+    const COLUMNS = ['submitted', 'under_review', 'approved', 'in_progress', 'completed'];
+
+    async function initPage() {
+      await initAdminShell('requests', 'Design Requests');
+      await loadRequests();
+      setupDragAndDrop();
+    }
+
+    async function loadRequests() {
+      const res = await adminApi.getRequests();
+      if (!res.ok) return;
+      allRequests = res.data;
+      renderKanban(allRequests);
+      renderTable(allRequests);
+    }
+
+    function renderKanban(requests) {
+      COLUMNS.forEach(col => {
+        const wrap = document.getElementById(`col-${col}`);
+        const colItems = requests.filter(r => (r.status || 'submitted') === col);
+        document.getElementById(`count-${col}`).textContent = colItems.length;
+
+        if (colItems.length === 0) {
+          wrap.innerHTML = `<div style="text-align:center; padding:24px 8px; color:var(--admin-ink-muted); font-size:11.5px;">No projects in this stage</div>`;
+          return;
+        }
+
+        wrap.innerHTML = colItems.map(r => `
+          <div class="kanban-card" draggable="true" data-id="${r.id}">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-size:10.5px; font-weight:700; color:var(--admin-copper); font-family:monospace;">${r.id}</span>
+              <span style="font-size:10px; color:var(--admin-ink-muted); text-transform:capitalize;">${(r.projectType || 'residential').replace('_', ' ')}</span>
+            </div>
+            <strong style="display:block; font-size:13.5px; color:var(--admin-ink); margin-bottom:4px; line-height:1.3;">
+              ${r.title}
+            </strong>
+            <div style="font-size:11.5px; color:var(--admin-ink-muted); margin-bottom:8px;">
+              ${r.clientName || 'Client'} · ${r.siteLocation || 'India'}
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; padding-top:8px; border-top:1px solid var(--admin-border-subtle); font-size:11px;">
+              <span style="color:var(--admin-ink);">Plot: ${(r.plotAreaSqFt || 0).toLocaleString()} sq.ft</span>
+              <a href="admin-request-details.html?id=${r.id}" style="color:var(--admin-copper); font-weight:600;">Details &rarr;</a>
+            </div>
+          </div>
+        `).join('');
+      });
+
+      // Bind drag start
+      document.querySelectorAll('.kanban-card').forEach(card => {
+        card.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', card.dataset.id);
+          card.style.opacity = '0.5';
+        });
+        card.addEventListener('dragend', () => {
+          card.style.opacity = '1';
+        });
+      });
+    }
+
+    function renderTable(requests) {
+      const tbody = document.getElementById('table-body');
+      if (requests.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--admin-ink-muted);">No design requests found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = requests.map(r => `
+        <tr>
+          <td>
+            <strong style="display:block; font-size:13.5px; color:var(--admin-ink);">${r.title}</strong>
+            <span style="font-size:11px; color:var(--admin-copper); font-family:monospace;">${r.id}</span>
+          </td>
+          <td>
+            <div>${r.clientName || 'Client'}</div>
+            <span style="font-size:11px; color:var(--admin-ink-muted);">${r.clientEmail || ''}</span>
+          </td>
+          <td>
+            <div>${(r.plotAreaSqFt || 0).toLocaleString()} sq.ft</div>
+            <span style="font-size:11px; color:var(--admin-ink-muted);">${r.siteLocation || 'N/A'}</span>
+          </td>
+          <td>
+            <strong>₹${((r.budgetMin || 0) / 100000).toFixed(1)}L - ₹${((r.budgetMax || 0) / 100000).toFixed(1)}L</strong>
+          </td>
+          <td>
+            <span class="tag-status status-${r.status}">${(r.status || 'submitted').replace('_', ' ')}</span>
+          </td>
+          <td>
+            <a href="admin-request-details.html?id=${r.id}" class="admin-btn" style="padding:5px 12px; font-size:11.5px; width:auto;">
+              Manage &rarr;
+            </a>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function setupDragAndDrop() {
+      COLUMNS.forEach(col => {
+        const wrap = document.getElementById(`col-${col}`);
+        wrap.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          wrap.classList.add('dragover');
+        });
+        wrap.addEventListener('dragleave', () => {
+          wrap.classList.remove('dragover');
+        });
+        wrap.addEventListener('drop', async (e) => {
+          e.preventDefault();
+          wrap.classList.remove('dragover');
+          const requestId = e.dataTransfer.getData('text/plain');
+          if (requestId) {
+            await adminApi.updateRequestStatus(requestId, col, `Status transitioned via Kanban pipeline`);
+            await loadRequests();
+          }
+        });
+      });
+    }
+
+    // Toggle views
+    const kanbanBtn = document.getElementById('view-kanban-btn');
+    const tableBtn = document.getElementById('view-table-btn');
+    const kanbanView = document.getElementById('kanban-view');
+    const tableView = document.getElementById('table-view');
+
+    kanbanBtn.addEventListener('click', () => {
+      kanbanBtn.classList.add('active');
+      tableBtn.classList.remove('active');
+      kanbanView.style.display = 'grid';
+      tableView.style.display = 'none';
+    });
+
+    tableBtn.addEventListener('click', () => {
+      tableBtn.classList.add('active');
+      kanbanBtn.classList.remove('active');
+      kanbanView.style.display = 'none';
+      tableView.style.display = 'block';
+    });
+
+    initPage();
+  </script>
+</body>
+</html>

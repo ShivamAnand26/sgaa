@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Profile & Portfolio — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="margin-bottom:20px;">
+          <a href="admin-clients.html" style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color:var(--admin-copper); font-weight:600;">
+            <i data-lucide="arrow-left" style="width:14px; height:14px;"></i>
+            <span>Back to All Clients</span>
+          </a>
+        </div>
+
+        <div style="background:var(--admin-white); border:1px solid var(--admin-border); border-radius:10px; padding:24px; margin-bottom:24px;">
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div style="width:54px; height:54px; border-radius:50%; background:var(--admin-sand); color:var(--admin-copper); display:flex; align-items:center; justify-content:center; font-family:var(--font-serif); font-size:24px; font-weight:700;">
+              <span id="client-initial">C</span>
+            </div>
+            <div>
+              <h1 id="client-name" style="font-family:var(--font-serif); font-size:28px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+                Client Name
+              </h1>
+              <p id="client-meta" style="font-size:13px; color:var(--admin-ink-muted); margin-top:4px;">
+                client@sga.in
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Commissioned Requests -->
+        <h2 style="font-family:var(--font-serif); font-size:22px; font-weight:600; margin-bottom:14px;">Commissioned Projects & Requests</h2>
+        <div class="data-table-wrap" style="margin-bottom:28px;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Project Title</th>
+                <th>Plot & Location</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="client-requests-body">
+              <tr><td colspan="4" style="text-align:center; padding:20px; color:var(--admin-ink-muted);">Loading requests...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Issued Proposals -->
+        <h2 style="font-family:var(--font-serif); font-size:22px; font-weight:600; margin-bottom:14px;">Fee Proposals & Contracts</h2>
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Proposal ID</th>
+                <th>Title</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="client-proposals-body">
+              <tr><td colspan="5" style="text-align:center; padding:20px; color:var(--admin-ink-muted);">Loading proposals...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    const params = new URLSearchParams(window.location.search);
+    const clientId = params.get('id');
+
+    async function initPage() {
+      await initAdminShell('clients', 'Client Details');
+      if (!clientId) {
+        window.location.href = 'admin-clients.html';
+        return;
+      }
+      const res = await adminApi.getClientDetails(clientId);
+      if (!res.ok) return;
+      const { client, requests, proposals } = res.data;
+
+      document.getElementById('client-initial').textContent = client.fullName ? client.fullName[0] : 'C';
+      document.getElementById('client-name').textContent = client.fullName;
+      document.getElementById('client-meta').textContent = `${client.email}${client.phone ? ` · ${client.phone}` : ''}`;
+
+      const reqBody = document.getElementById('client-requests-body');
+      if (!requests || requests.length === 0) {
+        reqBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--admin-ink-muted);">No requests for this client.</td></tr>`;
+      } else {
+        reqBody.innerHTML = requests.map(r => `
+          <tr>
+            <td><strong>${r.title}</strong><span style="display:block; font-size:11px; color:var(--admin-copper);">${r.id}</span></td>
+            <td>${r.siteLocation || 'India'} (${(r.plotAreaSqFt || 0).toLocaleString()} sq.ft)</td>
+            <td><span class="tag-status status-${r.status}">${r.status}</span></td>
+            <td><a href="admin-request-details.html?id=${r.id}" style="color:var(--admin-copper); font-weight:600;">Manage &rarr;</a></td>
+          </tr>
+        `).join('');
+      }
+
+      const propBody = document.getElementById('client-proposals-body');
+      if (!proposals || proposals.length === 0) {
+        propBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--admin-ink-muted);">No proposals issued.</td></tr>`;
+      } else {
+        propBody.innerHTML = proposals.map(p => `
+          <tr>
+            <td><code>${p.id}</code></td>
+            <td>${p.title}</td>
+            <td><strong>₹${(p.totalAmount || 0).toLocaleString('en-IN')}</strong></td>
+            <td><span class="tag-status status-${p.status}">${p.status}</span></td>
+            <td><a href="admin-proposals.html" style="color:var(--admin-copper); font-weight:600;">View in Proposals &rarr;</a></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    initPage();
+  </script>
+</body>
+</html>

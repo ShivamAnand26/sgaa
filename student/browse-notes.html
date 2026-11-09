@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse Architectural Notes — SGA.IN Student Portal</title>
+  <meta name="description" content="Explore verified architectural study notes, construction diagrams, and exam preparation guides.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M7 30 32 8l25 22M16 36l31-9' fill='none' stroke='%23C47A3B' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../client/css/tokens.css">
+  <link rel="stylesheet" href="../client/css/base.css">
+  <link rel="stylesheet" href="../client/css/components.css">
+  <link rel="stylesheet" href="../client/css/portal.css">
+  <link rel="stylesheet" href="css/student.css">
+</head>
+<body class="portal-layout">
+
+  <!-- Left Sidebar -->
+  <aside class="portal-sidebar" id="portal-sidebar" aria-label="Student Navigation">
+    <div class="sidebar-brand">
+      <a href="../index.html" class="brand-link" style="display:flex; flex-direction:column; gap:4px; text-decoration:none;">
+        <img src="/assets/logo-full.png" alt="Shilp Griha Associate" style="height:36px; width:auto; max-width:180px; object-fit:contain; display:block;">
+        <span style="display:block; font-size:9.5px; color:var(--copper); font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding-left:2px;">Student Portal</span>
+      </a>
+      <button type="button" class="sidebar-close" id="sidebar-close" aria-label="Close menu">&times;</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="student-dashboard.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/>
+          <rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="browse-notes.html" class="nav-item is-active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <span>Browse Notes</span>
+      </a>
+
+      <a href="my-purchases.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <span>My Purchases</span>
+      </a>
+
+      <a href="payment-history.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+        <span>Payment History</span>
+      </a>
+
+      <a href="student-profile.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>My Profile</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-mini-card">
+        <div class="user-avatar-circle" id="sidebar-avatar">S</div>
+        <div class="user-mini-info">
+          <span class="user-mini-name" id="user-display-name">Student</span>
+          <span class="user-mini-email" id="user-display-email">student@sga.in</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Wrap -->
+  <div class="portal-main">
+    <header class="portal-header">
+      <div class="header-left">
+        <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <h1 class="page-title">Browse Study Notes</h1>
+      </div>
+
+      <div class="header-actions">
+        <!-- PDF Database Status -->
+        <div style="display:inline-flex; align-items:center; gap:6px; font-size:11.5px; padding:4px 10px; background:#E8F5E9; color:#2E7D32; border:1px solid #C8E6C9; border-radius:14px; font-weight:600;" title="Backed by persistent server database">
+          <span style="width:6px; height:6px; border-radius:50%; background:#2E7D32; display:inline-block;"></span>
+          <span>PDF Database Active</span>
+        </div>
+
+        <!-- Wishlist -->
+        <a href="wishlist.html" class="cart-icon-btn" aria-label="Wishlist">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+        </a>
+
+        <!-- Cart -->
+        <a href="cart.html" class="cart-icon-btn" aria-label="Shopping Cart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          </svg>
+          <span class="cart-badge" id="header-cart-badge" style="display:none;">0</span>
+        </a>
+
+        <!-- Notifications -->
+        <a href="student-notifications.html" class="notif-bell-btn" aria-label="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="notif-badge" id="header-notif-badge" style="display:none;">0</span>
+        </a>
+
+        <!-- Profile -->
+        <a href="student-profile.html" class="header-user-btn" aria-label="Profile settings">
+          <div class="header-user-avatar" id="header-avatar">S</div>
+          <span class="header-user-name">Account</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="portal-content page-fade-in">
+      <!-- Title & Kicker -->
+      <div style="margin-bottom:24px;">
+        <span class="section-label">Curated Study Notes</span>
+        <h2 style="font-size:32px; margin-top:4px;">Academic Library</h2>
+        <p style="margin-top:4px;">Browse comprehensive notes prepared for architectural university exams and studio reviews.</p>
+      </div>
+
+      <!-- Dynamic Subject Filter Chips -->
+      <div class="subjects-row" id="subjects-chip-row" role="tablist" aria-label="Filter notes by academic subject">
+        <button type="button" class="subject-chip is-active" data-subject="all" role="tab" aria-selected="true">
+          <span>All Subjects</span>
+          <span class="subject-chip-count" id="all-subjects-count">(0)</span>
+        </button>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="card" style="margin-bottom:28px; padding:18px 22px;">
+        <div class="browse-filter-bar">
+          <!-- Search -->
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Search Keywords</label>
+            <div class="search-box">
+              <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" id="notes-search-input" class="form-input" placeholder="Title, topic, or faculty...">
+            </div>
+          </div>
+
+          <!-- Subject -->
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Subject</label>
+            <select id="filter-subject" class="form-select">
+              <option value="all">All Subjects</option>
+            </select>
+          </div>
+
+          <!-- Category -->
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Category</label>
+            <select id="filter-category" class="form-select">
+              <option value="all">All Categories</option>
+              <option value="structures">Structures & Engineering</option>
+              <option value="history">Architectural History</option>
+              <option value="planning">Urban Planning & Zoning</option>
+              <option value="materials">Building Materials & Masonry</option>
+              <option value="design">Architectural Design & Studio</option>
+              <option value="estimation">Estimation & Professional Practice</option>
+              <option value="Exam Notes">Exam Prep Notes</option>
+              <option value="Studio Sheets">Studio Handouts</option>
+              <option value="Calculations">Calculations & Formulas</option>
+            </select>
+          </div>
+
+          <!-- Sort -->
+          <div class="form-group" style="margin:0;">
+            <label class="form-label">Sort By</label>
+            <select id="sort-notes" class="form-select">
+              <option value="newest">Newest First</option>
+              <option value="popular">Most Popular</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+            </select>
+          </div>
+
+          <!-- Action Buttons -->
+          <div style="display:flex; gap:8px;">
+            <button type="button" id="apply-filters-btn" class="btn btn-primary" style="height:48px;">
+              Filter
+            </button>
+            <button type="button" id="reset-filters-btn" class="btn btn-secondary" style="height:48px;" title="Reset filters">
+              Reset
+            </button>
+          </div>
+        </div>
+
+        <!-- Price Range Slider Row -->
+        <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--sand); display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:12px; flex:1; max-width:400px;">
+            <span style="font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted);">Max Price:</span>
+            <input type="range" id="filter-max-price" min="100" max="5000" step="50" value="5000" style="flex:1; accent-color:var(--copper); cursor:pointer;">
+            <span id="price-val-display" style="font-weight:700; color:var(--copper); font-size:14px;">₹5,000</span>
+          </div>
+
+          <span id="results-count" style="font-size:12.5px; color:var(--muted);">Loading notes...</span>
+        </div>
+      </div>
+
+      <!-- Notes Grid Container -->
+      <section id="notes-catalog-container" class="notes-grid" aria-label="Study notes catalog">
+        <div class="skeleton" style="height:320px; grid-column:1/-1;"></div>
+      </section>
+
+      <!-- Pagination -->
+      <div id="notes-pagination" class="pagination" style="display:none;">
+        <span class="pagination-info" id="page-info">Page 1 of 1</span>
+        <div class="pagination-buttons" style="display:flex; gap:8px;">
+          <button type="button" id="page-prev-btn" class="btn btn-secondary btn-sm" disabled>&larr; Previous</button>
+          <button type="button" id="page-next-btn" class="btn btn-secondary btn-sm">Next &rarr;</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Tab Navigation -->
+  <nav class="student-bottom-nav" aria-label="Mobile Navigation">
+    <a href="student-dashboard.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+      <span>Dashboard</span>
+    </a>
+    <a href="browse-notes.html" class="bottom-nav-item is-active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <span>Browse</span>
+    </a>
+    <a href="my-purchases.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>Purchases</span>
+    </a>
+    <a href="cart.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      <span>Cart</span>
+      <span class="bottom-nav-badge" id="bottom-cart-badge" style="display:none;">0</span>
+    </a>
+    <a href="student-profile.html" class="bottom-nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <script type="module">
+    import { initBrowseNotes } from './js/notes.js';
+    initBrowseNotes();
+  </script>
+</body>
+</html>

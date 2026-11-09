@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="description" content="Study Notes by Shilp Griha Associate (SGA) — High-yield architectural notes, construction drawings, estimation guides, and studio exam preparation material by Ar. Vikas Verma.">
+  <meta property="og:title" content="Study Notes — Shilp Griha Associate (SGA)">
+  <meta property="og:description" content="High-yield architectural notes, construction drawings, estimation guides, and exam preparation material.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/assets/logo-full.png">
+  <title>Study Notes — Shilp Griha Associate (SGA)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&family=Noto+Serif+Devanagari:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ArchitecturalService",
+    "name": "Shilp Griha Associate",
+    "alternateName": "SGA",
+    "image": "/assets/logo-full.png",
+    "logo": "/assets/logo-full.png",
+    "telephone": "+91 79854 36965",
+    "email": "ar.vikasverma0401@gmail.com",
+    "founder": {
+      "@type": "Person",
+      "name": "Ar. Vikas Verma",
+      "jobTitle": "Architect, Founder"
+    },
+    "slogan": "नक्शा सही, निर्माण सही",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Laxmi Nagar Colony, Cinema Road, in front of Shree Siddhivinayak Palace",
+      "addressLocality": "Gola Gokarnath",
+      "addressRegion": "Uttar Pradesh",
+      "postalCode": "262802",
+      "addressCountry": "IN"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 28.0827,
+      "longitude": 80.4705
+    },
+    "areaServed": "Gola Gokarnath, Lakhimpur Kheri and nearby areas of Uttar Pradesh"
+  }
+  </script>
+  <style>
+    :root {
+      --white:#FFFFFF; --ivory:#FAF8F5; --sand:#EFE9E1; --sand-light:#F6F3EE; --ink:#1C1B1A;
+      --muted:#6F6A64; --copper:#C47A3B; --copper-dark:#A96429; --gold:#D9B77E; --dark:#14110F;
+      --serif:"Cormorant Garamond",Georgia,serif; --sans:"Manrope",Arial,sans-serif;
+      --container:1240px; --section-space:clamp(48px,6vw,84px);
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--white);color:var(--ink);font:400 15px/1.65 var(--sans);-webkit-font-smoothing:antialiased}
+    body.menu-open,body.modal-open{overflow:hidden}
+    img{display:block;max-width:100%}
+    a{color:inherit;text-decoration:none}
+    button,input,select,textarea{font:inherit}
+    button,a{-webkit-tap-highlight-color:transparent}
+    :focus-visible{outline:2px solid var(--copper);outline-offset:3px}
+    .container{width:min(var(--container),calc(100% - 64px));margin-inline:auto}
+
+    /* Buttons & Typography */
+    .btn{min-height:46px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 20px;border:1px solid transparent;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;transition:transform .2s ease,box-shadow .2s ease,background .2s ease,color .2s ease}
+    .btn-primary{color:var(--white);background:linear-gradient(110deg,var(--copper),var(--gold));box-shadow:0 4px 14px rgba(196,122,59,.15)}
+    .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(196,122,59,.25)}
+    .btn-outline{color:var(--ink);border-color:var(--sand);background:var(--white)}
+    .btn-outline:hover{background:var(--ivory);border-color:var(--copper);transform:translateY(-1px)}
+    .btn-sm{min-height:36px;padding:0 14px;font-size:11px}
+    .btn-block{width:100%}
+    .arrow{width:14px;height:14px;flex:none}
+
+    /* Header & Navigation */
+    .site-header{position:fixed;z-index:100;inset:0 0 auto;height:82px;display:flex;align-items:center;background:rgba(255,255,255,.98);backdrop-filter:blur(10px);border-bottom:1px solid var(--sand);box-shadow:0 4px 20px rgba(28,27,26,.03);transition:height .3s}
+    .nav-wrap{display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{display:inline-flex;align-items:center;gap:9px;flex:none}
+    .nav-links{display:flex;align-items:center;gap:clamp(16px,2.1vw,30px);margin-left:auto}
+    .nav-link{position:relative;padding:9px 0;color:#393633;font-size:12px;font-weight:600;white-space:nowrap}
+    .nav-link:after{content:"";position:absolute;left:0;bottom:2px;width:100%;height:2px;background:var(--copper);transform:scaleX(0);transform-origin:right;transition:transform .25s ease}
+    .nav-link:hover:after,.nav-link:focus-visible:after{transform:scaleX(1);transform-origin:left}
+    .nav-link.active{color:var(--copper)}
+    .nav-link.active:after{transform:scaleX(1)}
+    .nav-actions{display:flex;align-items:center;gap:16px}
+    .login-menu{position:relative}
+    .login-trigger{display:flex;align-items:center;gap:7px;padding:9px 0;border:0;background:none;color:var(--ink);font-size:12px;font-weight:600;cursor:pointer}
+    .chevron{width:11px;height:11px;transition:transform .2s}
+    .login-menu[aria-expanded=true] .chevron{transform:rotate(180deg)}
+    .login-dropdown{position:absolute;top:calc(100% + 14px);right:0;width:220px;padding:8px;background:var(--white);border:1px solid var(--sand);border-radius:10px;box-shadow:0 16px 40px rgba(28,27,26,.1);opacity:0;visibility:hidden;transform:translateY(8px);transition:.2s}
+    .login-menu[aria-expanded=true] .login-dropdown{opacity:1;visibility:visible;transform:none}
+    .login-dropdown a{display:block;padding:10px 12px;border-radius:6px;color:var(--muted);font-size:12px}
+    .login-dropdown a:hover{background:var(--ivory);color:var(--ink)}
+    .login-dropdown a.highlight-portal{color:var(--copper);font-weight:600;background:rgba(196,122,59,0.08)}
+    .menu-toggle{display:none;width:42px;height:42px;align-items:center;justify-content:center;border:1px solid var(--sand);border-radius:8px;background:var(--white);color:var(--ink);cursor:pointer}
+    .menu-toggle svg{width:20px;height:20px}
+    .mobile-panel{position:fixed;z-index:99;inset:0;display:flex;flex-direction:column;justify-content:center;padding:90px 32px 40px;background:var(--white);transform:translateX(102%);transition:transform .35s cubic-bezier(.22,.7,.2,1)}
+    .mobile-panel.is-open{transform:translateX(0)}
+    .mobile-links{display:flex;flex-direction:column}
+    .mobile-links a{padding:12px 0;border-bottom:1px solid var(--sand);font:500 28px/1.2 var(--serif);color:var(--ink)}
+    .mobile-links a.active{color:var(--copper)}
+    .mobile-login{display:flex;flex-direction:column;gap:12px;margin-top:24px;color:var(--muted);font-size:13px}
+    .mobile-login a.portal-link{color:var(--copper);font-weight:600}
+
+    /* Page Header */
+    .page-header{padding:130px 0 36px;background:linear-gradient(180deg,var(--ivory) 0%,var(--white) 100%);border-bottom:1px solid var(--sand)}
+    .page-header-content{max-width:820px}
+    .section-label{display:inline-flex;align-items:center;gap:12px;margin:0 0 14px;color:var(--copper);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
+    .section-label:before{content:"";width:24px;height:1px;background:var(--gold)}
+    .page-title{margin:0;font:500 clamp(38px,5vw,62px)/1.05 var(--serif);letter-spacing:-.03em}
+    .page-title em{color:var(--copper);font-style:italic}
+    .page-subtitle-line{width:54px;height:2px;background:linear-gradient(90deg,var(--copper),var(--gold));margin:18px 0 16px;border-radius:2px}
+    .page-intro{margin:0;color:var(--muted);font-size:15px;line-height:1.8}
+
+    /* Controls Bar: Chips, Search & Sort */
+    .controls-wrap{padding:28px 0 16px;background:var(--white);position:sticky;top:82px;z-index:20;border-bottom:1px solid rgba(223,214,203,.6);backdrop-filter:blur(8px)}
+    .controls-row{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    
+    /* Horizontal Subject Chips */
+    .chips-container{display:flex;align-items:center;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;width:100%}
+    .chips-container::-webkit-scrollbar{display:none}
+    .subject-chip{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 15px;background:var(--ivory);border:1px solid var(--sand);border-radius:99px;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer;transition:all .2s ease;user-select:none}
+    .subject-chip:hover{border-color:var(--copper);background:rgba(196,122,59,.06);color:var(--copper)}
+    .subject-chip.is-active{background:var(--copper);border-color:var(--copper);color:var(--white);box-shadow:0 3px 10px rgba(196,122,59,.25)}
+    .subject-chip .chip-count{font-size:10px;padding:1px 6px;border-radius:99px;background:rgba(0,0,0,.08);color:inherit}
+    .subject-chip.is-active .chip-count{background:rgba(255,255,255,.25);color:var(--white)}
+
+    /* Search and Sort Sub-row */
+    .filter-actions-row{display:flex;align-items:center;justify-content:space-between;gap:16px;width:100%;margin-top:14px;flex-wrap:wrap}
+    .search-box{position:relative;flex:1;min-width:240px;max-width:440px}
+    .search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--muted);pointer-events:none}
+    .search-input{width:100%;height:42px;padding:0 14px 0 40px;border:1px solid var(--sand);border-radius:8px;background:var(--ivory);font-size:13px;color:var(--ink);transition:all .2s}
+    .search-input:focus{outline:0;border-color:var(--copper);background:var(--white);box-shadow:0 0 0 3px rgba(196,122,59,.1)}
+    .search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:22px;height:22px;border:0;background:none;color:var(--muted);cursor:pointer;display:none;align-items:center;justify-content:center;border-radius:50%}
+    .search-clear:hover{background:var(--sand);color:var(--ink)}
+
+    .sort-box{display:flex;align-items:center;gap:10px}
+    .sort-label{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+    .sort-select{height:42px;padding:0 32px 0 14px;border:1px solid var(--sand);border-radius:8px;background:var(--ivory) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236F6A64' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center;appearance:none;font-size:12px;font-weight:600;color:var(--ink);cursor:pointer}
+    .sort-select:focus{outline:0;border-color:var(--copper);background-color:var(--white)}
+
+    .filter-meta-summary{font-size:12px;color:var(--muted);margin-top:10px;display:flex;align-items:center;justify-content:space-between}
+
+    /* Notes Grid & Cards */
+    .notes-section{padding:36px 0 90px}
+    .notes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+    .note-card{background:var(--white);border:1px solid var(--sand);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;position:relative}
+    .note-card:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(28,27,26,.08);border-color:rgba(196,122,59,.4)}
+    
+    .note-thumb-wrap{position:relative;width:100%;aspect-ratio:16/10;background:var(--sand-light);overflow:hidden;border-bottom:1px solid var(--sand)}
+    .note-thumb-img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+    .note-card:hover .note-thumb-img{transform:scale(1.03)}
+    .note-thumb-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(217,183,126,.18) 0%,rgba(239,233,225,.8) 100%);color:var(--copper);gap:8px;padding:20px;text-align:center}
+    .note-thumb-placeholder svg{width:36px;height:36px;opacity:.8}
+    .note-thumb-placeholder span{font-family:var(--serif);font-size:17px;font-weight:600;color:var(--ink)}
+
+    .note-badge-subject{position:absolute;top:12px;left:12px;background:rgba(255,255,255,.94);backdrop-filter:blur(6px);padding:4px 10px;border-radius:6px;border:1px solid var(--sand);font-size:11px;font-weight:700;color:var(--copper);letter-spacing:.03em;text-transform:uppercase}
+    .note-badge-pages{position:absolute;bottom:10px;right:12px;background:rgba(20,17,15,.75);backdrop-filter:blur(4px);padding:3px 8px;border-radius:4px;font-size:10px;font-weight:600;color:var(--white)}
+
+    .note-body{padding:20px 22px;display:flex;flex-direction:column;flex:1}
+    .note-title{margin:0 0 8px;font:600 21px/1.25 var(--serif);color:var(--ink);letter-spacing:-.01em}
+    .note-desc{margin:0 0 16px;color:var(--muted);font-size:13px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex:1}
+    
+    .note-preview-info{display:flex;align-items:center;gap:7px;padding:8px 12px;background:var(--sand-light);border-radius:6px;font-size:11px;color:#55504A;margin-bottom:18px}
+    .note-preview-info svg{width:14px;height:14px;color:var(--copper);flex:none}
+
+    .note-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:16px;border-top:1px solid var(--sand);margin-top:auto}
+    .note-price-block{display:flex;flex-direction:column}
+    .note-price-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+    .note-price-val{font:700 22px/1 var(--serif);color:var(--copper)}
+    .note-price-free{font:700 20px/1 var(--sans);color:#2E7D32}
+
+    /* Skeleton Loaders */
+    .skeleton-card{background:var(--white);border:1px solid var(--sand);border-radius:14px;overflow:hidden;padding:0;display:flex;flex-direction:column}
+    .skeleton-thumb{width:100%;aspect-ratio:16/10;background:linear-gradient(90deg,#ECE7E0 25%,#F5F1EB 50%,#ECE7E0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+    .skeleton-body{padding:20px;display:flex;flex-direction:column;gap:12px}
+    .skeleton-line{height:14px;border-radius:4px;background:linear-gradient(90deg,#ECE7E0 25%,#F5F1EB 50%,#ECE7E0 75%);background-size:200% 100%;animation:shimmer 1.5s infinite}
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+    /* Empty State */
+    .empty-state{text-align:center;padding:70px 20px;background:var(--ivory);border:1px dashed var(--sand);border-radius:16px;max-width:680px;margin:40px auto}
+    .empty-icon{width:64px;height:64px;border-radius:50%;background:rgba(196,122,59,.1);color:var(--copper);display:grid;place-items:center;margin:0 auto 18px}
+    .empty-icon svg{width:32px;height:32px}
+    .empty-title{margin:0 0 10px;font:600 28px/1.2 var(--serif);color:var(--ink)}
+    .empty-text{margin:0 0 22px;color:var(--muted);font-size:14px;max-width:440px;margin-inline:auto}
+
+    /* Polite Notice Modal for Client/Admin accounts */
+    .modal-backdrop{position:fixed;z-index:200;inset:0;display:grid;place-items:center;padding:20px;background:rgba(20,17,15,.6);opacity:0;visibility:hidden;transition:.25s ease}
+    .modal-backdrop.is-open{opacity:1;visibility:visible}
+    .modal-box{position:relative;width:min(100%,440px);padding:34px;background:var(--white);border-radius:14px;border:1px solid var(--sand);box-shadow:0 24px 50px rgba(0,0,0,.15);transform:translateY(12px);transition:transform .25s ease}
+    .modal-backdrop.is-open .modal-box{transform:none}
+    .modal-close-btn{position:absolute;top:14px;right:14px;width:32px;height:32px;border:1px solid var(--sand);border-radius:50%;background:var(--white);cursor:pointer;display:grid;place-items:center;color:var(--muted)}
+    .modal-close-btn:hover{background:var(--ivory);color:var(--ink)}
+    .modal-tag{display:inline-block;padding:4px 9px;border-radius:4px;background:rgba(196,122,59,.12);color:var(--copper);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+    .modal-title{margin:0 0 12px;font:600 30px/1.1 var(--serif)}
+    .modal-desc{margin:0 0 24px;color:var(--muted);font-size:13px;line-height:1.7}
+    .modal-actions{display:flex;flex-direction:column;gap:10px}
+
+    /* Footer */
+    .site-footer{padding:70px 0 25px;background:var(--dark);color:var(--white)}
+    .footer-main{display:grid;grid-template-columns:1.35fr .75fr .9fr .9fr;gap:45px;padding-bottom:52px}
+    .footer-brand p{max-width:285px;margin:22px 0 0;color:#aaa29a;font-size:11px;line-height:1.9}
+    .footer-col h3{margin:4px 0 19px;color:var(--gold);font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+    .footer-col a,.footer-col p{display:block;margin:10px 0;color:#b9b1a8;font-size:11px;line-height:1.8}
+    .footer-col a:hover{color:var(--white)}
+    .footer-bottom{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-top:22px;border-top:1px solid rgba(255,255,255,.13);color:#918980;font-size:10px}
+    .footer-legal{display:flex;gap:20px;flex-wrap:wrap}
+    .footer-legal a:hover{color:var(--white)}
+
+    /* Animated Preloader */
+    .sga-loader-overlay{position:fixed;inset:0;background:rgba(250,248,245,.96);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:99999;transition:opacity .35s,visibility .35s}
+    .sga-loader-content{display:flex;flex-direction:column;align-items:center;text-align:center}
+    .sga-loader-logo{height:60px;width:auto;margin-bottom:14px}
+    .sga-loader-caption{font-family:var(--serif);font-size:20px;color:var(--ink);margin-bottom:12px}
+    .sga-loader-bar{width:110px;height:3px;background:rgba(223,214,203,.7);border-radius:99px;overflow:hidden;position:relative}
+    .sga-loader-bar-progress{position:absolute;top:0;left:0;bottom:0;width:40%;background:linear-gradient(90deg,var(--copper),var(--gold));border-radius:99px;animation:sgaBarSlide 1.5s cubic-bezier(.4,0,.2,1) infinite}
+    @keyframes sgaBarSlide{0%{left:-40%;width:30%}50%{left:25%;width:50%}100%{left:100%;width:25%}}
+
+    @media(max-width:1024px){
+      .notes-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:850px){
+      .site-header{height:74px}
+      .controls-wrap{top:74px}
+      .nav-links,.nav-actions{display:none}
+      .menu-toggle{display:inline-flex}
+      .footer-main{grid-template-columns:1.2fr 1fr 1fr;gap:35px}
+      .footer-brand{grid-column:1/-1}
+    }
+    @media(max-width:640px){
+      .container{width:calc(100% - 36px)}
+      .notes-grid{grid-template-columns:1fr;gap:20px}
+      .controls-row{gap:12px}
+      .filter-actions-row{flex-direction:column;align-items:stretch}
+      .search-box{max-width:100%}
+      .sort-box{justify-content:space-between}
+      .footer-main{grid-template-columns:1fr;gap:28px}
+      .footer-bottom{flex-direction:column;align-items:flex-start}
+      .modal-box{padding:26px 20px}
+    }
+    .font-devanagari{font-family:"Noto Serif Devanagari",serif}
+    .brand-logo-img{height:44px;width:auto;max-width:210px;object-fit:contain;display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.04));transition:transform .25s ease}
+    @media(max-width:850px){.brand-logo-img{height:36px}}
+    .floating-whatsapp-btn{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:#25D366;color:#FFF;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(37,211,102,.45);z-index:90;transition:transform .25s ease,box-shadow .25s ease;text-decoration:none}
+    .floating-whatsapp-btn:hover{transform:scale(1.08) translateY(-2px);box-shadow:0 8px 24px rgba(37,211,102,.6)}
+    .floating-whatsapp-btn svg{width:28px;height:28px;fill:#FFF}
+  </style>
+</head>
+<body>
+  <!-- Preloader -->
+  <div id="site-preloader" class="sga-loader-overlay">
+    <div class="sga-loader-content">
+      <div style="background:#FFF; padding:10px 18px; border-radius:12px; box-shadow:0 4px 15px rgba(0,0,0,.06); margin-bottom:12px; display:inline-block;">
+        <img src="/assets/logo-full.png" alt="Shilp Griha Associate" class="sga-loader-logo" style="height:48px; width:auto; margin:0;">
+      </div>
+      <div class="sga-loader-caption">Shilp Griha Associate · Study Notes</div>
+      <div class="font-devanagari" style="color:var(--copper); font-size:14px; margin-bottom:8px; font-weight:600;">नक्शा सही, निर्माण सही</div>
+      <div class="sga-loader-bar"><div class="sga-loader-bar-progress"></div></div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header" id="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="/" aria-label="Shilp Griha Associate home" style="display:inline-flex; align-items:center;">
+        <img src="/assets/logo-full.png" alt="Shilp Griha Associate" class="brand-logo-img">
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/#about">About Us</a>
+        <a class="nav-link" href="/#services">Services</a>
+        <a class="nav-link active" href="notes.html">Study Notes</a>
+        <a class="nav-link" href="/#contact">Contact Us</a>
+      </nav>
+      <div class="nav-actions">
+        <div class="login-menu" id="login-menu" aria-expanded="false">
+          <button class="login-trigger" id="login-trigger" aria-haspopup="true" aria-expanded="false" aria-controls="login-dropdown">
+            Login / Register 
+            <svg class="chevron" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="m2 4 4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg>
+          </button>
+          <div class="login-dropdown" id="login-dropdown" role="menu">
+            <a href="/client/login.html" class="highlight-portal" role="menuitem">Client Portal (SGA)</a>
+            <a href="/student/student-login.html" class="highlight-portal" style="color:var(--ink); background:var(--sand-light);" role="menuitem">Student Portal (Study Notes)</a>
+            <a href="/admin/admin-login.html" style="color:var(--copper); border-top:1px solid var(--sand); margin-top:4px; font-weight:600;" role="menuitem">Studio Admin Console &rarr;</a>
+          </div>
+        </div>
+      </div>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-panel">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <nav class="mobile-panel" id="mobile-panel" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="mobile-links">
+      <a href="/">Home</a>
+      <a href="/#about">About Us</a>
+      <a href="/#services">Services</a>
+      <a href="notes.html" class="active">Study Notes</a>
+      <a href="/#contact">Contact Us</a>
+      <a href="/client/login.html" style="color:var(--copper)">Client Portal</a>
+      <a href="/student/student-login.html" style="color:var(--gold)">Student Portal</a>
+    </div>
+    <div class="mobile-login">
+      <a href="/client/login.html" class="portal-link">Client Portal (Login / Register) &rarr;</a>
+      <a href="/student/student-login.html" class="portal-link" style="color:var(--ink);">Student Portal (Notes & Reading) &rarr;</a>
+      <a href="/admin/admin-login.html" class="portal-link" style="color:var(--copper); font-size:12px;">Studio Admin Console &rarr;</a>
+    </div>
+    <a class="btn btn-primary" href="/client/register.html" style="margin-top:20px;">Get Started <span aria-hidden="true">↗</span></a>
+  </nav>
+
+  <main>
+    <!-- Page Header -->
+    <header class="page-header">
+      <div class="container">
+        <div class="page-header-content">
+          <p class="section-label">Academic & Professional Library</p>
+          <h1 class="page-title">Study <em>Notes</em></h1>
+          <div class="page-subtitle-line"></div>
+          <p class="page-intro">
+            Comprehensive architectural study notes, construction detailing references, estimation cheat-sheets, and studio exam guides compiled and maintained directly by SGA.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sticky Filters & Controls -->
+    <section class="controls-wrap" aria-label="Filter and search study notes">
+      <div class="container">
+        <div class="controls-row">
+          <!-- Dynamic Subject Chips -->
+          <div class="chips-container" id="subject-chips-bar" role="tablist" aria-label="Filter notes by subject">
+            <button class="subject-chip is-active" data-subject="all" role="tab" aria-selected="true">
+              <span>All Subjects</span>
+              <span class="chip-count" id="count-all">0</span>
+            </button>
+            <!-- Injected dynamic subjects with note count -->
+          </div>
+
+          <!-- Search and Sort Row -->
+          <div class="filter-actions-row">
+            <div class="search-box">
+              <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <input type="text" id="notes-search-input" class="search-input" placeholder="Search by title, topic or subject..." aria-label="Search study notes">
+              <button id="search-clear-btn" class="search-clear" aria-label="Clear search">✕</button>
+            </div>
+
+            <div class="sort-box">
+              <label for="notes-sort-select" class="sort-label">Sort by:</label>
+              <select id="notes-sort-select" class="sort-select">
+                <option value="newest">Newest first</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="filter-meta-summary">
+          <span id="results-count-text">Loading notes...</span>
+          <span id="active-filter-indicator" style="display:none; color:var(--copper); font-weight:600; cursor:pointer;">Reset all filters ✕</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notes Grid Section -->
+    <section class="notes-section">
+      <div class="container">
+        <!-- Skeleton Loader Container -->
+        <div id="notes-skeleton-grid" class="notes-grid" aria-hidden="true">
+          <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-body"><div class="skeleton-line" style="width:40%"></div><div class="skeleton-line" style="width:80%; height:20px"></div><div class="skeleton-line" style="width:100%"></div><div class="skeleton-line" style="width:50%"></div></div></div>
+          <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-body"><div class="skeleton-line" style="width:35%"></div><div class="skeleton-line" style="width:75%; height:20px"></div><div class="skeleton-line" style="width:100%"></div><div class="skeleton-line" style="width:60%"></div></div></div>
+          <div class="skeleton-card"><div class="skeleton-thumb"></div><div class="skeleton-body"><div class="skeleton-line" style="width:45%"></div><div class="skeleton-line" style="width:85%; height:20px"></div><div class="skeleton-line" style="width:100%"></div><div class="skeleton-line" style="width:40%"></div></div></div>
+        </div>
+
+        <!-- Real Notes Grid -->
+        <div id="notes-grid" class="notes-grid" style="display:none;"></div>
+
+        <!-- Empty State -->
+        <div id="notes-empty-state" class="empty-state" style="display:none;">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+              <path d="M6 6h10"/>
+              <path d="M6 10h10"/>
+              <path d="M6 14h6"/>
+            </svg>
+          </div>
+          <h2 class="empty-title">New notes are coming soon</h2>
+          <p class="empty-text">
+            Our architectural faculty is drafting and verifying curriculum materials. Check back shortly or browse other categories.
+          </p>
+          <button id="empty-reset-btn" class="btn btn-outline btn-sm">Clear filters</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Role Notice Modal (When Client/Admin clicks Buy Notes) -->
+  <div class="modal-backdrop" id="role-notice-modal" role="dialog" aria-modal="true" aria-labelledby="modal-role-title">
+    <div class="modal-box">
+      <button class="modal-close-btn" id="modal-role-close" aria-label="Close dialog">✕</button>
+      <span class="modal-tag">Student Account Required</span>
+      <h3 class="modal-title" id="modal-role-title">Student Account</h3>
+      <p class="modal-desc">
+        Please use a student account to buy notes. Study materials, watermarked downloads, and digital readers are reserved for verified student accounts in the Student Portal.
+      </p>
+      <div class="modal-actions">
+        <a id="modal-role-login-link" href="/student/student-login.html" class="btn btn-primary btn-block">
+          Switch to Student Login &rarr;
+        </a>
+        <button id="modal-role-cancel-btn" class="btn btn-outline btn-block">Stay on Website</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating WhatsApp CTA (Public Pages Only) -->
+  <a href="https://wa.me/917985436965" class="floating-whatsapp-btn" target="_blank" rel="noopener" aria-label="Chat on WhatsApp with Shilp Griha Associate" title="Chat on WhatsApp with Ar. Vikas Verma">
+    <svg viewBox="0 0 24 24"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2ZM12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67ZM9.53 7.32C9.35 7.32 9.05 7.38 8.8 7.66C8.54 7.93 7.83 8.59 7.83 9.94C7.83 11.29 8.81 12.59 8.95 12.78C9.09 12.96 10.88 15.72 13.62 16.9C14.27 17.18 14.78 17.35 15.18 17.48C15.84 17.69 16.44 17.66 16.91 17.59C17.44 17.51 18.53 16.93 18.76 16.29C18.99 15.64 18.99 15.09 18.92 14.98C18.85 14.86 18.67 14.8 18.39 14.66C18.11 14.52 16.74 13.85 16.48 13.76C16.23 13.67 16.05 13.62 15.86 13.9C15.68 14.18 15.15 14.8 14.99 14.98C14.83 15.17 14.67 15.19 14.39 15.05C14.11 14.91 13.22 14.62 12.16 13.67C11.34 12.94 10.78 12.03 10.62 11.75C10.46 11.47 10.6 11.32 10.74 11.18C10.87 11.05 11.03 10.84 11.17 10.68C11.31 10.52 11.36 10.4 11.45 10.22C11.54 10.03 11.5 9.87 11.43 9.73C11.36 9.59 10.8 8.23 10.57 7.68C10.35 7.15 10.12 7.22 9.95 7.21C9.79 7.21 9.61 7.21 9.42 7.21L9.53 7.32Z"/></svg>
+  </a>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-main">
+        <div class="footer-brand">
+          <div style="background:var(--ivory); padding:8px 16px; border-radius:10px; display:inline-block; border:1px solid rgba(217,183,126,0.3); margin-bottom:14px;">
+            <img src="/assets/logo-full.png" alt="Shilp Griha Associate" style="height:44px; width:auto; max-width:210px; object-fit:contain; display:block;">
+          </div>
+          <div class="font-devanagari" style="font-size:17px; font-weight:600; color:var(--gold); letter-spacing:0.02em; margin-bottom:12px;">नक्शा सही, निर्माण सही</div>
+          <p style="max-width:300px; margin:0 0 14px; color:#aaa29a; font-size:11px; line-height:1.8;">
+            Led by Ar. Vikas Verma. Architectural planning, 2D floor plans, 3D elevation, interior design and construction consultancy across Gola Gokarnath, Lakhimpur Kheri and nearby areas of Uttar Pradesh.
+          </p>
+        </div>
+        <div class="footer-col">
+          <h3>Portals & Notes</h3>
+          <a href="/client/login.html">Client Portal</a>
+          <a href="/student/student-login.html">Student Portal</a>
+          <a href="notes.html" style="color:var(--white); font-weight:600;">Study Notes</a>
+          <a href="/admin/admin-login.html" style="color:var(--gold); font-weight:600;">Studio Admin Console &rarr;</a>
+          <a href="/client/dev-tools.html">Dev & QA Testing Tools</a>
+        </div>
+        <div class="footer-col">
+          <h3>Student Portal</h3>
+          <a href="/student/student-login.html">Student Sign In</a>
+          <a href="/student/student-register.html">Create Student Account</a>
+          <a href="/student/browse-notes.html">Browse Notes</a>
+          <a href="/student/my-purchases.html">My Library & Purchases</a>
+        </div>
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <p><a href="mailto:ar.vikasverma0401@gmail.com" style="color:#b9b1a8;">ar.vikasverma0401@gmail.com</a></p>
+          <p><a href="tel:+917985436965" style="color:#b9b1a8;">+91 79854 36965</a></p>
+          <p><a href="https://wa.me/917985436965" target="_blank" rel="noopener" style="color:#25D366; font-weight:600;">WhatsApp: +91 79854 36965 &rarr;</a></p>
+          <p style="color:#9e978f; font-size:10px; line-height:1.6;">Laxmi Nagar Colony, Cinema Road, in front of Shree Siddhivinayak Palace, Gola Gokarnath, UP 262802</p>
+          <a href="/#contact">Send an enquiry ↗</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Shilp Griha Associate (SGA). Developed by <span style="color:var(--gold);">NXT Services.</span></span>
+        <div class="footer-legal">
+          <a href="/#privacy">Privacy Policy</a>
+          <a href="/#terms">Terms & Conditions</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { api } from '/client/js/api.js';
+
+    // Elements
+    const $ = (sel, el = document) => el.querySelector(sel);
+    const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
+
+    const preloader = $('#site-preloader');
+    const header = $('#site-header');
+    const loginMenu = $('#login-menu');
+    const loginTrigger = $('#login-trigger');
+    const menuToggle = $('#menu-toggle');
+    const mobilePanel = $('#mobile-panel');
+
+    const subjectChipsBar = $('#subject-chips-bar');
+    const countAllEl = $('#count-all');
+    const searchInput = $('#notes-search-input');
+    const clearSearchBtn = $('#search-clear-btn');
+    const sortSelect = $('#notes-sort-select');
+    const resultsCountText = $('#results-count-text');
+    const activeFilterIndicator = $('#active-filter-indicator');
+
+    const skeletonGrid = $('#notes-skeleton-grid');
+    const notesGrid = $('#notes-grid');
+    const emptyState = $('#notes-empty-state');
+    const emptyResetBtn = $('#empty-reset-btn');
+
+    const roleModal = $('#role-notice-modal');
+    const roleModalClose = $('#modal-role-close');
+    const roleModalCancel = $('#modal-role-cancel-btn');
+    const roleModalLoginLink = $('#modal-role-login-link');
+
+    // State
+    const state = {
+      subject: 'all',
+      search: '',
+      sort: 'newest',
+      currentUser: null,
+      cachedSubjects: [],
+      cachedNotes: []
+    };
+
+    // Hide preloader
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        if (preloader) {
+          preloader.style.opacity = '0';
+          setTimeout(() => { preloader.style.display = 'none'; }, 350);
+        }
+      }, 200);
+    });
+
+    // Navigation interactions
+    if (loginTrigger && loginMenu) {
+      loginTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = loginMenu.getAttribute('aria-expanded') !== 'true';
+        loginMenu.setAttribute('aria-expanded', String(open));
+        loginTrigger.setAttribute('aria-expanded', String(open));
+      });
+      document.addEventListener('click', (e) => {
+        if (!loginMenu.contains(e.target)) {
+          loginMenu.setAttribute('aria-expanded', 'false');
+          loginTrigger.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    if (menuToggle && mobilePanel) {
+      const closeMenu = () => {
+        mobilePanel.classList.remove('is-open');
+        mobilePanel.setAttribute('aria-hidden', 'true');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('menu-open');
+      };
+      menuToggle.addEventListener('click', () => {
+        const open = menuToggle.getAttribute('aria-expanded') !== 'true';
+        menuToggle.setAttribute('aria-expanded', String(open));
+        mobilePanel.classList.toggle('is-open', open);
+        mobilePanel.setAttribute('aria-hidden', String(!open));
+        document.body.classList.toggle('menu-open', open);
+      });
+      $$('.mobile-links a', mobilePanel).forEach(a => a.addEventListener('click', closeMenu));
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+    }
+
+    // Read initial URL params
+    function readUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      const sub = params.get('subject');
+      const q = params.get('q') || params.get('search');
+      const s = params.get('sort');
+
+      if (sub) state.subject = sub.toLowerCase().trim();
+      if (q) {
+        state.search = q.trim();
+        searchInput.value = state.search;
+        clearSearchBtn.style.display = 'flex';
+      }
+      if (s && ['newest', 'price-asc', 'price-desc'].includes(s)) {
+        state.sort = s;
+        sortSelect.value = s;
+      }
+    }
+
+    // Sync URL params without full page reload
+    function syncUrlParams() {
+      const params = new URLSearchParams();
+      if (state.subject && state.subject !== 'all') params.set('subject', state.subject);
+      if (state.search.trim()) params.set('search', state.search.trim());
+      if (state.sort && state.sort !== 'newest') params.set('sort', state.sort);
+
+      const qs = params.toString();
+      const newUrl = window.location.pathname + (qs ? '?' + qs : '');
+      window.history.replaceState({}, '', newUrl);
+    }
+
+    // Check user auth session for routing
+    async function checkCurrentUser() {
+      try {
+        const res = await api.getMe();
+        if (res && res.ok && res.data) {
+          state.currentUser = res.data;
+        } else {
+          state.currentUser = null;
+        }
+      } catch (e) {
+        state.currentUser = null;
+      }
+    }
+
+    // Load dynamic subjects
+    async function loadSubjects() {
+      try {
+        const res = await api.listSubjects();
+        if (res && res.ok && Array.isArray(res.data)) {
+          state.cachedSubjects = res.data;
+          renderSubjectChips();
+        }
+      } catch (err) {
+        console.warn('Could not load subjects:', err);
+      }
+    }
+
+    // Render horizontal subject chips (textContent for all text)
+    function renderSubjectChips() {
+      // Remove any previously rendered dynamic chips, keep "All Subjects"
+      const existingDynamic = $$('.subject-chip:not([data-subject="all"])', subjectChipsBar);
+      existingDynamic.forEach(el => el.remove());
+
+      // Only show subjects with at least one published note, per requirements:
+      // "chips or tabs showing 'All Subjects' followed by each subject that has at least one published note, with a count, for example 'Estimation (4)'"
+      const activeSubjects = state.cachedSubjects.filter(s => (s.noteCount || 0) > 0);
+
+      // Compute total notes count across active subjects
+      const totalNotes = state.cachedNotes.length;
+      if (countAllEl) {
+        countAllEl.textContent = String(totalNotes);
+      }
+
+      activeSubjects.forEach(s => {
+        const slug = (s.slug || s.name.toLowerCase().replace(/[^a-z0-9]+/g, '-')).toLowerCase();
+        const chip = document.createElement('button');
+        chip.className = 'subject-chip';
+        chip.setAttribute('type', 'button');
+        chip.setAttribute('role', 'tab');
+        chip.setAttribute('data-subject', slug);
+
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = s.name; // STRICTLY textContent
+
+        const countSpan = document.createElement('span');
+        countSpan.className = 'chip-count';
+        countSpan.textContent = String(s.noteCount || 0);
+
+        chip.appendChild(nameSpan);
+        chip.appendChild(countSpan);
+
+        if (state.subject === slug) {
+          chip.classList.add('is-active');
+          chip.setAttribute('aria-selected', 'true');
+        } else {
+          chip.setAttribute('aria-selected', 'false');
+        }
+
+        chip.addEventListener('click', () => {
+          selectSubject(slug);
+        });
+
+        subjectChipsBar.appendChild(chip);
+      });
+
+      // Update "All Subjects" chip active state
+      const allChip = $('.subject-chip[data-subject="all"]', subjectChipsBar);
+      if (allChip) {
+        if (state.subject === 'all') {
+          allChip.classList.add('is-active');
+          allChip.setAttribute('aria-selected', 'true');
+        } else {
+          allChip.classList.remove('is-active');
+          allChip.setAttribute('aria-selected', 'false');
+        }
+      }
+    }
+
+    // Select subject chip
+    function selectSubject(slug) {
+      state.subject = slug;
+      $$('.subject-chip', subjectChipsBar).forEach(c => {
+        const isCurrent = c.getAttribute('data-subject') === slug;
+        c.classList.toggle('is-active', isCurrent);
+        c.setAttribute('aria-selected', String(isCurrent));
+      });
+      syncUrlParams();
+      loadNotes();
+    }
+
+    // Load public notes
+    async function loadNotes() {
+      skeletonGrid.style.display = 'grid';
+      notesGrid.style.display = 'none';
+      emptyState.style.display = 'none';
+      resultsCountText.textContent = 'Searching curated notes...';
+
+      // Update active filter indicator
+      const hasActiveFilters = state.subject !== 'all' || Boolean(state.search.trim());
+      activeFilterIndicator.style.display = hasActiveFilters ? 'inline' : 'none';
+
+      try {
+        const res = await api.listPublicNotes({
+          subject: state.subject,
+          search: state.search,
+          sort: state.sort,
+          limit: 100 // Load complete public collection for smooth browsing
+        });
+
+        skeletonGrid.style.display = 'none';
+
+        if (res && res.ok && Array.isArray(res.data.items)) {
+          state.cachedNotes = res.data.items;
+          const notes = res.data.items;
+          const total = res.data.total;
+
+          // Update count for "All" if viewing all
+          if (state.subject === 'all' && !state.search.trim() && countAllEl) {
+            countAllEl.textContent = String(total);
+          }
+
+          if (notes.length === 0) {
+            notesGrid.style.display = 'none';
+            emptyState.style.display = 'block';
+            resultsCountText.textContent = '0 notes found';
+          } else {
+            emptyState.style.display = 'none';
+            notesGrid.style.display = 'grid';
+            resultsCountText.textContent = `Showing ${notes.length} published study note${notes.length === 1 ? '' : 's'}`;
+            renderNotesGrid(notes);
+          }
+        } else {
+          skeletonGrid.style.display = 'none';
+          emptyState.style.display = 'block';
+          resultsCountText.textContent = '0 notes found';
+        }
+      } catch (err) {
+        console.error('Error fetching public notes:', err);
+        skeletonGrid.style.display = 'none';
+        emptyState.style.display = 'block';
+        resultsCountText.textContent = 'Could not load notes at this time';
+      }
+    }
+
+    // Render note cards
+    function renderNotesGrid(notes) {
+      notesGrid.innerHTML = '';
+
+      notes.forEach(note => {
+        const card = document.createElement('article');
+        card.className = 'note-card';
+
+        // 1. Thumbnail wrap
+        const thumbWrap = document.createElement('div');
+        thumbWrap.className = 'note-thumb-wrap';
+
+        const thumbSrc = note.thumbnailUrl || note.thumbnail || '';
+        if (thumbSrc) {
+          const img = document.createElement('img');
+          img.className = 'note-thumb-img';
+          img.src = thumbSrc;
+          img.alt = note.title;
+          img.loading = 'lazy';
+          img.onerror = () => {
+            img.style.display = 'none';
+            const placeholder = createFallbackThumb(note);
+            thumbWrap.appendChild(placeholder);
+          };
+          thumbWrap.appendChild(img);
+        } else {
+          const placeholder = createFallbackThumb(note);
+          thumbWrap.appendChild(placeholder);
+        }
+
+        // Subject badge (uses textContent)
+        const subBadge = document.createElement('span');
+        subBadge.className = 'note-badge-subject';
+        subBadge.textContent = note.subject || 'Architecture';
+        thumbWrap.appendChild(subBadge);
+
+        // Page count badge
+        const pagesBadge = document.createElement('span');
+        pagesBadge.className = 'note-badge-pages';
+        pagesBadge.textContent = `${note.pages || 1} pages`;
+        thumbWrap.appendChild(pagesBadge);
+
+        card.appendChild(thumbWrap);
+
+        // 2. Note body
+        const body = document.createElement('div');
+        body.className = 'note-body';
+
+        const title = document.createElement('h3');
+        title.className = 'note-title';
+        title.textContent = note.title || 'Untitled Note';
+        body.appendChild(title);
+
+        const desc = document.createElement('p');
+        desc.className = 'note-desc';
+        desc.textContent = note.description || 'Architectural detailing, construction standards, and studio exam notes.';
+        body.appendChild(desc);
+
+        // Preview info line (requirement: "a Preview info line")
+        const previewInfo = document.createElement('div');
+        previewInfo.className = 'note-preview-info';
+        previewInfo.innerHTML = `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 12s3-7 10-7 7 7 7 7-3 7-10 7-7-7-7-7Z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+          <span>Includes first 3 pages preview in Student Portal</span>
+        `;
+        body.appendChild(previewInfo);
+
+        // 3. Footer row: Price & Buy Notes button
+        const footer = document.createElement('div');
+        footer.className = 'note-footer';
+
+        const priceBlock = document.createElement('div');
+        priceBlock.className = 'note-price-block';
+        const priceLabel = document.createElement('span');
+        priceLabel.className = 'note-price-label';
+        priceLabel.textContent = 'Price';
+        const priceVal = document.createElement('span');
+        if (Number(note.price) > 0) {
+          priceVal.className = 'note-price-val';
+          priceVal.textContent = `₹${Number(note.price).toLocaleString('en-IN')}`;
+        } else {
+          priceVal.className = 'note-price-free';
+          priceVal.textContent = 'Free';
+        }
+        priceBlock.appendChild(priceLabel);
+        priceBlock.appendChild(priceVal);
+
+        const buyBtn = document.createElement('button');
+        buyBtn.className = 'btn btn-primary btn-sm';
+        buyBtn.type = 'button';
+        buyBtn.textContent = 'Buy Notes';
+        buyBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          handleBuyNotes(note);
+        });
+
+        footer.appendChild(priceBlock);
+        footer.appendChild(buyBtn);
+        body.appendChild(footer);
+
+        card.appendChild(body);
+        notesGrid.appendChild(card);
+      });
+    }
+
+    function createFallbackThumb(note) {
+      const wrap = document.createElement('div');
+      wrap.className = 'note-thumb-placeholder';
+      wrap.innerHTML = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+          <path d="m9 9 6 6m0-6-6 6"/>
+        </svg>
+      `;
+      const caption = document.createElement('span');
+      caption.textContent = note.subject || 'SGA Note';
+      wrap.appendChild(caption);
+      return wrap;
+    }
+
+    /**
+     * CHANGE 2: BUY FLOW
+     * 1. If NOT logged in: go to student-login.html with return URL that remembers the note:
+     *    student-login.html?next=note-details.html?id=NOTE_ID
+     * 2. If logged in as student: go straight to note's page in Student Portal.
+     * 3. If logged in as client or admin: show polite message modal "Please use a student account to buy notes".
+     */
+    async function handleBuyNotes(note) {
+      await checkCurrentUser();
+
+      const studentTarget = `note-details.html?id=${encodeURIComponent(note.id)}`;
+      const safeNext = encodeURIComponent(studentTarget);
+      const noteTitleParam = encodeURIComponent(note.title);
+
+      if (!state.currentUser) {
+        // Not logged in -> Send to student login with return URL
+        window.location.href = `/student/student-login.html?next=${safeNext}&noteId=${encodeURIComponent(note.id)}&noteTitle=${noteTitleParam}`;
+        return;
+      }
+
+      // Check role
+      if (state.currentUser.role === 'student') {
+        // Logged in as student -> Go straight to Student Portal note details page
+        window.location.href = `/student/note-details.html?id=${encodeURIComponent(note.id)}`;
+      } else {
+        // Logged in as client or admin -> Show polite modal notice
+        openRoleModal(note, safeNext, noteTitleParam);
+      }
+    }
+
+    function openRoleModal(note, safeNext, noteTitleParam) {
+      if (roleModalLoginLink) {
+        roleModalLoginLink.href = `/student/student-login.html?next=${safeNext}&noteId=${encodeURIComponent(note.id)}&noteTitle=${noteTitleParam}`;
+      }
+      roleModal.classList.add('is-open');
+      document.body.classList.add('modal-open');
+    }
+
+    function closeRoleModal() {
+      roleModal.classList.remove('is-open');
+      document.body.classList.remove('modal-open');
+    }
+
+    if (roleModalClose) roleModalClose.addEventListener('click', closeRoleModal);
+    if (roleModalCancel) roleModalCancel.addEventListener('click', closeRoleModal);
+    if (roleModal) {
+      roleModal.addEventListener('click', (e) => {
+        if (e.target === roleModal) closeRoleModal();
+      });
+    }
+
+    // Search and Sort event handlers
+    let searchDebounceTimer = null;
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        const val = searchInput.value.trim();
+        state.search = val;
+        clearSearchBtn.style.display = val ? 'flex' : 'none';
+
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+          syncUrlParams();
+          loadNotes();
+        }, 300);
+      });
+    }
+
+    if (clearSearchBtn) {
+      clearSearchBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        state.search = '';
+        clearSearchBtn.style.display = 'none';
+        syncUrlParams();
+        loadNotes();
+      });
+    }
+
+    if (sortSelect) {
+      sortSelect.addEventListener('change', () => {
+        state.sort = sortSelect.value;
+        syncUrlParams();
+        loadNotes();
+      });
+    }
+
+    // Reset filters
+    function resetAllFilters() {
+      state.subject = 'all';
+      state.search = '';
+      if (searchInput) searchInput.value = '';
+      if (clearSearchBtn) clearSearchBtn.style.display = 'none';
+      if (sortSelect) {
+        state.sort = 'newest';
+        sortSelect.value = 'newest';
+      }
+      $$('.subject-chip', subjectChipsBar).forEach(c => {
+        const isAll = c.getAttribute('data-subject') === 'all';
+        c.classList.toggle('is-active', isAll);
+        c.setAttribute('aria-selected', String(isAll));
+      });
+      syncUrlParams();
+      loadNotes();
+    }
+
+    if (activeFilterIndicator) activeFilterIndicator.addEventListener('click', resetAllFilters);
+    if (emptyResetBtn) emptyResetBtn.addEventListener('click', resetAllFilters);
+
+    // Initial setup
+    const allChip = $('.subject-chip[data-subject="all"]', subjectChipsBar);
+    if (allChip) {
+      allChip.addEventListener('click', () => selectSubject('all'));
+    }
+
+    readUrlParams();
+    checkCurrentUser();
+    loadSubjects();
+    loadNotes();
+  </script>
+</body>
+</html>

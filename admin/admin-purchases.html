@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orders & Purchases — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 style="font-family:var(--font-serif); font-size:32px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+              Study Notes Orders & Purchases
+            </h1>
+            <p style="font-size:13.5px; color:var(--admin-ink-muted); margin-top:4px;">
+              All completed study notes checkouts, student transactions, and transaction receipts.
+            </p>
+          </div>
+          <button id="export-csv-btn" class="admin-btn" style="width:auto; background:var(--admin-sand); color:var(--admin-ink); border-color:var(--admin-border); box-shadow:none;">
+            <i data-lucide="download"></i>
+            <span>Export Orders to CSV</span>
+          </button>
+        </div>
+
+        <div style="margin-bottom:20px; display:flex; gap:12px; flex-wrap:wrap;">
+          <input type="text" id="order-search" placeholder="Search by student email, name, or order ID..." class="admin-input" style="max-width:320px; background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+          <select id="status-filter" class="admin-input" style="width:auto; background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+            <option value="all">All Statuses</option>
+            <option value="completed">Completed</option>
+            <option value="refunded">Refunded</option>
+          </select>
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Order Ref</th>
+                <th>Student</th>
+                <th>Items Purchased</th>
+                <th>Total Paid</th>
+                <th>Status</th>
+                <th>Purchased Date</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body">
+              <tr><td colspan="6" style="text-align:center; padding:30px; color:var(--admin-ink-muted);">Loading purchases...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    let allOrders = [];
+
+    async function initPage() {
+      await initAdminShell('purchases', 'Orders & Purchases');
+      await loadOrders();
+    }
+
+    async function loadOrders() {
+      const res = await adminApi.getPurchases();
+      if (!res.ok) return;
+      allOrders = res.data;
+      renderTable(allOrders);
+    }
+
+    function renderTable(orders) {
+      const tbody = document.getElementById('orders-table-body');
+      if (orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--admin-ink-muted);">No purchases found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td><code style="color:var(--admin-copper); font-weight:700;">${o.id}</code></td>
+          <td>
+            <strong style="display:block; font-size:13px; color:var(--admin-ink);">${o.studentName || 'Student'}</strong>
+            <span style="font-size:11px; color:var(--admin-ink-muted);">${o.studentEmail || ''}</span>
+          </td>
+          <td>
+            <div style="font-size:12.5px; color:var(--admin-ink);">${(o.items || []).map(i => i.title).join(', ') || 'Study Note Document'}</div>
+          </td>
+          <td><strong style="color:var(--admin-ink); font-size:14px;">₹${(o.totalAmount || 0).toLocaleString('en-IN')}</strong></td>
+          <td><span class="tag-status status-${o.status}">${o.status}</span></td>
+          <td style="font-size:12px; color:var(--admin-ink-muted);">${new Date(o.createdAt || Date.now()).toLocaleDateString('en-IN', { month:'short', day:'numeric', year:'numeric', hour:'2-digit', minute:'2-digit' })}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Filter
+    document.getElementById('order-search').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      const filtered = allOrders.filter(o => 
+        (o.id && o.id.toLowerCase().includes(q)) ||
+        (o.studentName && o.studentName.toLowerCase().includes(q)) ||
+        (o.studentEmail && o.studentEmail.toLowerCase().includes(q))
+      );
+      renderTable(filtered);
+    });
+
+    document.getElementById('status-filter').addEventListener('change', (e) => {
+      const val = e.target.value;
+      const filtered = val === 'all' ? allOrders : allOrders.filter(o => o.status === val);
+      renderTable(filtered);
+    });
+
+    // CSV Export
+    document.getElementById('export-csv-btn').addEventListener('click', () => {
+      if (allOrders.length === 0) return;
+      let csv = 'Order ID,Student Name,Student Email,Items,Total Amount,Status,Date\n';
+      allOrders.forEach(o => {
+        const items = (o.items || []).map(i => i.title).join('; ');
+        csv += `"${o.id}","${o.studentName || ''}","${o.studentEmail || ''}","${items}",${o.totalAmount || 0},"${o.status}","${o.createdAt}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `SGA_Orders_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    initPage();
+  </script>
+</body>
+</html>

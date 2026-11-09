@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Sign In — Shilp Griha Associate (SGA)</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="admin-auth-body">
+
+  <canvas id="auth-three-canvas"></canvas>
+  <div class="auth-ambient-glow"></div>
+
+  <div class="admin-auth-card">
+    <div class="admin-brand-header">
+      <div class="admin-brand-logo" style="display:inline-flex; align-items:center; gap:12px; justify-content:center;">
+        <img src="/assets/logo-full.png" alt="Shilp Griha Associate" style="height:44px; width:auto; max-width:210px; object-fit:contain; border-radius:8px; background:#fff; padding:4px 8px; box-shadow:0 4px 12px rgba(0,0,0,0.12);">
+      </div>
+      <div>
+        <span class="admin-auth-tag">Studio Management & Control</span>
+      </div>
+      <h1 class="admin-auth-heading">Administrator Access</h1>
+      <p class="admin-auth-subtext">Restricted studio console for managing study notes, students, proposals, and design projects.</p>
+    </div>
+
+    <!-- Alert Box for Lockouts and Errors -->
+    <div id="status-alert" class="admin-alert"></div>
+
+    <form id="admin-login-form" novalidate>
+      <div class="admin-form-group">
+        <label for="admin-identifier">Admin Username or Email</label>
+        <div class="admin-input-wrap">
+          <i data-lucide="user-check"></i>
+          <input type="text" id="admin-identifier" class="admin-input" placeholder="vikasverma_gola" required autocomplete="username" autofocus>
+        </div>
+      </div>
+
+      <div class="admin-form-group">
+        <label for="admin-password">Password</label>
+        <div class="admin-input-wrap">
+          <i data-lucide="lock"></i>
+          <input type="password" id="admin-password" class="admin-input" placeholder="••••••••••••" required autocomplete="current-password">
+          <button type="button" class="toggle-pwd-btn" id="toggle-pwd-btn" aria-label="Toggle password visibility">
+            <i data-lucide="eye" id="toggle-pwd-icon"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="admin-auth-options">
+        <label class="admin-checkbox-label">
+          <input type="checkbox" id="remember-me" checked>
+          <span>Remember me for 30 days</span>
+        </label>
+        <span style="font-size:11px; color:#8C847A;">Default: 8 hours</span>
+      </div>
+
+      <button type="submit" id="submit-btn" class="admin-btn">
+        <span>Sign In to Admin Dashboard</span>
+        <i data-lucide="arrow-right"></i>
+      </button>
+
+      <div style="text-align:center; margin-top:16px;">
+        <span class="security-badge">
+          <i data-lucide="shield-check"></i>
+          Role-governed environment · Strict administrator authentication
+        </span>
+      </div>
+    </form>
+
+    <div class="admin-auth-footer">
+      Looking for client or student portals?
+      <div style="display:flex; justify-content:center; gap:16px; margin-top:8px;">
+        <a href="../client/login.html">Client Portal &rarr;</a>
+        <a href="../student/student-login.html">Student Portal &rarr;</a>
+        <a href="../index.html">Main Website &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminAuthScene } from './js/admin-scene.js';
+
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+
+    initAdminAuthScene('auth-three-canvas');
+
+    const form = document.getElementById('admin-login-form');
+    const alertBox = document.getElementById('status-alert');
+    const submitBtn = document.getElementById('submit-btn');
+    const togglePwdBtn = document.getElementById('toggle-pwd-btn');
+    const pwdInput = document.getElementById('admin-password');
+    const togglePwdIcon = document.getElementById('toggle-pwd-icon');
+
+    if (togglePwdBtn && pwdInput) {
+      togglePwdBtn.addEventListener('click', () => {
+        const isPwd = pwdInput.type === 'password';
+        pwdInput.type = isPwd ? 'text' : 'password';
+        togglePwdIcon.setAttribute('data-lucide', isPwd ? 'eye-off' : 'eye');
+        if (window.lucide) window.lucide.createIcons();
+      });
+    }
+
+    function showAlert(message, type = 'error') {
+      alertBox.textContent = message;
+      alertBox.className = `admin-alert is-visible alert-${type}`;
+    }
+
+    function hideAlert() {
+      alertBox.className = 'admin-alert';
+      alertBox.textContent = '';
+    }
+
+    // Check query params for notices
+    const urlParams = new URLSearchParams(window.location.search);
+    const reason = urlParams.get('reason');
+    if (reason === 'session_expired') {
+      showAlert('Your administrative session has expired. Please sign in again.', 'error');
+    } else if (reason) {
+      showAlert(decodeURIComponent(reason), 'error');
+    }
+
+    // Ensure default admin (vikasverma_gola / Vikas@2026) is always seeded
+    adminApi.ensureDefaultAdmin();
+
+    // Check if already logged in as admin
+    async function checkState() {
+      const auth = await adminApi.requireAdmin();
+      if (auth.ok) {
+        window.location.href = 'admin-overview.html';
+      }
+    }
+    checkState();
+
+    // Handle login submit
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAlert();
+
+      const identifier = document.getElementById('admin-identifier').value.trim();
+      const password = document.getElementById('admin-password').value;
+      const rememberMe = document.getElementById('remember-me').checked;
+
+      if (!identifier) {
+        showAlert('Please enter your administrator username or email.');
+        return;
+      }
+      if (!password) {
+        showAlert('Please enter your administrator password.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.querySelector('span').textContent = 'Authenticating...';
+
+      const res = await adminApi.adminLogin(identifier, password, rememberMe);
+
+      if (!res.ok) {
+        showAlert(res.error || 'Authentication failed. Please verify credentials.');
+        submitBtn.disabled = false;
+        submitBtn.querySelector('span').textContent = 'Sign In to Admin Dashboard';
+        return;
+      }
+
+      showAlert('Signed in successfully! Opening admin dashboard...', 'success');
+      setTimeout(() => {
+        const redirect = urlParams.get('redirect') || 'admin-overview.html';
+        window.location.href = redirect;
+      }, 500);
+    });
+  </script>
+</body>
+</html>

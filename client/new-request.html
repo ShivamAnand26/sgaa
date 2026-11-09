@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Design Request — Shilp Griha Associate (SGA)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/portal.css">
+</head>
+<body class="portal-layout">
+
+  <!-- Left Sidebar -->
+  <aside class="portal-sidebar" id="portal-sidebar" aria-label="Portal Navigation">
+    <div class="sidebar-brand">
+      <a href="../index.html" class="brand-link" style="display:flex; flex-direction:column; gap:4px; text-decoration:none;">
+        <img src="/assets/logo-full.png" alt="Shilp Griha Associate" style="height:36px; width:auto; max-width:160px; object-fit:contain; display:block;">
+        <span style="display:block; font-size:9.5px; color:var(--copper); font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding-left:2px;">Client Portal</span>
+      </a>
+      <button type="button" class="sidebar-close" id="sidebar-close" aria-label="Close menu">&times;</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/>
+          <rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="new-request.html" class="nav-item is-active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        <span>Submit Request</span>
+      </a>
+
+      <a href="my-requests.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <span>My Requests</span>
+      </a>
+
+      <a href="notifications.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span>Notifications</span>
+        <span class="nav-badge" id="nav-notif-badge" style="display:none;">0</span>
+      </a>
+
+      <a href="profile.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>My Profile</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-mini-card">
+        <div class="user-avatar-circle" id="sidebar-avatar">C</div>
+        <div class="user-mini-info">
+          <span class="user-mini-name" id="user-display-name">Client</span>
+          <span class="user-mini-email" id="user-display-email">client@sga.in</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Wrap -->
+  <div class="portal-main">
+    <header class="portal-header">
+      <div class="header-left">
+        <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <h1 class="page-title">Submit New Request</h1>
+      </div>
+
+      <div class="header-actions">
+
+
+        <a href="notifications.html" class="notif-bell-btn" aria-label="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="notif-badge" id="header-notif-badge" style="display:none;">0</span>
+        </a>
+
+        <a href="profile.html" class="header-user-btn" aria-label="Profile settings">
+          <div class="header-user-avatar" id="header-avatar">C</div>
+          <span class="header-user-name">Account</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="portal-content page-fade-in">
+      <!-- 4-Step Wizard Container -->
+      <div id="wizard-container">
+        <!-- Progress Stepper Indicator -->
+        <nav class="stepper-nav" aria-label="Request Progress Steps">
+          <div class="stepper-step is-active" data-step="1">
+            <div class="step-num">1</div>
+            <span class="step-title">Personal</span>
+          </div>
+          <div class="stepper-step" data-step="2">
+            <div class="step-num">2</div>
+            <span class="step-title">Project</span>
+          </div>
+          <div class="stepper-step" data-step="3">
+            <div class="step-num">3</div>
+            <span class="step-title">Documents</span>
+          </div>
+          <div class="stepper-step" data-step="4">
+            <div class="step-num">4</div>
+            <span class="step-title">Review</span>
+          </div>
+        </nav>
+
+        <form id="wizard-form" novalidate onsubmit="return false;">
+          <!-- STEP 1: Personal Information -->
+          <section class="step-content is-active card" data-step="1">
+            <p class="section-label">Step 01 / 04</p>
+            <h2 style="margin:6px 0 24px;">Confirm Your Contact Details</h2>
+            <p style="margin-bottom:28px;">This information will be associated with your architectural project team for calls and drawing dispatches.</p>
+
+            <div class="step-grid-2">
+              <div class="form-group">
+                <label for="req-client-name" class="form-label">Full Name <span class="required">*</span></label>
+                <input type="text" id="req-client-name" class="form-input" readonly style="background:var(--sand-light); cursor:not-allowed;">
+              </div>
+
+              <div class="form-group">
+                <label for="req-client-email" class="form-label">Email Address <span class="required">*</span></label>
+                <input type="email" id="req-client-email" class="form-input" readonly style="background:var(--sand-light); cursor:not-allowed;">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="req-client-phone" class="form-label">Primary Contact Phone <span class="required">*</span></label>
+              <input type="tel" id="req-client-phone" class="form-input" placeholder="+91 79854 36965" required>
+              <span class="form-hint">Our planning architects will connect on this number for initial site consultation.</span>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; margin-top:32px;">
+              <button type="button" id="step-1-next" class="btn btn-primary">
+                Proceed to Project Details &rarr;
+              </button>
+            </div>
+          </section>
+
+          <!-- STEP 2: Project Information -->
+          <section class="step-content card" data-step="2">
+            <p class="section-label">Step 02 / 04</p>
+            <h2 style="margin:6px 0 24px;">Project Scope & Specifications</h2>
+
+            <div class="form-group">
+              <label for="req-title" class="form-label">Project Title <span class="required">*</span></label>
+              <input type="text" id="req-title" class="form-input" placeholder="e.g. Modern 3-Storey Residence in Greater Noida" required>
+            </div>
+
+            <div class="step-grid-2">
+              <div class="form-group">
+                <label for="req-type" class="form-label">Project Type <span class="required">*</span></label>
+                <select id="req-type" class="form-select">
+                  <option value="Residential Building">Residential Building</option>
+                  <option value="Commercial Building">Commercial Building</option>
+                  <option value="Interior Design">Interior Design</option>
+                  <option value="Floor Planning">Floor Planning</option>
+                  <option value="2D Planning">2D Planning</option>
+                  <option value="3D Elevation">3D Elevation</option>
+                  <option value="Other">Other Architectural Requirement</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="req-location" class="form-label">Site Location / City <span class="required">*</span></label>
+                <input type="text" id="req-location" class="form-input" placeholder="e.g. Sector 44, Noida, UP" required>
+              </div>
+            </div>
+
+            <div class="step-grid-3">
+              <div class="form-group">
+                <label for="req-plot-area" class="form-label">Plot Area <span class="required">*</span></label>
+                <div style="display:flex; gap:8px;">
+                  <input type="number" id="req-plot-area" class="form-input" placeholder="e.g. 2400" min="1" required style="flex:1;">
+                  <select id="req-plot-unit" class="form-select" style="width:110px;">
+                    <option value="sq ft">sq ft</option>
+                    <option value="sq yd">sq yd</option>
+                    <option value="sq m">sq m</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="req-floors" class="form-label">Number of Floors</label>
+                <select id="req-floors" class="form-select">
+                  <option value="Ground Only">Ground Only (Single Floor)</option>
+                  <option value="G+1">G + 1 (Two Storeys)</option>
+                  <option value="G+2" selected>G + 2 (Three Storeys)</option>
+                  <option value="G+3">G + 3 (Four Storeys)</option>
+                  <option value="G+4+">G + 4 or Higher</option>
+                  <option value="Basement+G+2">Basement + G + 2</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="req-budget" class="form-label">Estimated Construction Budget</label>
+                <select id="req-budget" class="form-select">
+                  <option value="Under ₹25 Lakhs">Under ₹25 Lakhs</option>
+                  <option value="₹25L - ₹50L" selected>₹25L - ₹50L</option>
+                  <option value="₹50L - ₹1 Crore">₹50L - ₹1 Crore</option>
+                  <option value="₹1 Crore - ₹2.5 Crore">₹1 Crore - ₹2.5 Crore</option>
+                  <option value="₹2.5 Crore+">₹2.5 Crore+</option>
+                  <option value="To be determined">To be determined</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div style="display:flex; justify-content:space-between;">
+                <label for="req-desc" class="form-label">Project Description & Functional Needs <span class="required">*</span></label>
+                <span id="desc-char-counter" class="form-hint">0 / 1000 characters</span>
+              </div>
+              <textarea id="req-desc" class="form-textarea" maxlength="1000" placeholder="Describe room requirements, orientation preferences, family structure, parking needs, or aesthetic preferences..." required></textarea>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; margin-top:32px;">
+              <button type="button" id="step-2-back" class="btn btn-secondary">&larr; Back to Personal Info</button>
+              <button type="button" id="step-2-next" class="btn btn-primary">Proceed to Attach Documents &rarr;</button>
+            </div>
+          </section>
+
+          <!-- STEP 3: File Uploads -->
+          <section class="step-content card" data-step="3">
+            <p class="section-label">Step 03 / 04</p>
+            <h2 style="margin:6px 0 12px;">Site Images & Reference Documents</h2>
+            <p style="margin-bottom:24px;">Upload site photographs, municipal maps, existing hand sketches, or reference elevations (PDF, JPG, PNG up to 5MB each, max 8 files total).</p>
+
+            <div style="display:flex; gap:16px; align-items:center; margin-bottom:16px; flex-wrap:wrap;">
+              <div style="flex:1; min-width:240px;">
+                <label for="file-category-select" class="form-label">Document Category</label>
+                <select id="file-category-select" class="form-select">
+                  <option value="Site Photographs">Site Photographs</option>
+                  <option value="Existing Floor Plans">Existing Floor Plans / Layouts</option>
+                  <option value="Survey / Cadastral Maps">Survey / Cadastral Maps</option>
+                  <option value="Inspiration & Reference Images">Inspiration & Reference Images</option>
+                </select>
+              </div>
+              <span id="files-count-badge" class="status-badge status-badge--submitted" style="margin-top:20px;">0 / 8 files attached</span>
+            </div>
+
+            <!-- Drag and Drop Zone -->
+            <div class="upload-dropzone" id="file-dropzone" role="button" tabindex="0" aria-label="Drop files here or click to browse">
+              <div class="upload-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <div>
+                <strong style="color:var(--ink); font-size:14px; display:block;">Click to browse or drag and drop files</strong>
+                <span style="font-size:12px; color:var(--muted); display:block; margin-top:2px;">PDF, JPG, PNG accepted (up to 5 MB per file)</span>
+              </div>
+              <input type="file" id="req-file-input" multiple accept=".pdf,.jpg,.jpeg,.png" style="display:none;">
+            </div>
+
+            <!-- Upload Progress Bar -->
+            <div id="upload-progress" style="display:none; height:4px; width:100%; background:var(--sand); border-radius:2px; margin-top:16px; overflow:hidden;">
+              <div id="upload-progress-bar" style="height:100%; width:0%; background:var(--copper); transition:width 0.2s ease;"></div>
+            </div>
+
+            <!-- List of Attached Files -->
+            <div style="margin-top:24px;">
+              <h4 style="font-size:13px; text-transform:uppercase; letter-spacing:0.06em; color:var(--muted); margin-bottom:10px;">Attached Files</h4>
+              <div id="uploaded-files-list" class="uploaded-files-list"></div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; margin-top:32px;">
+              <button type="button" id="step-3-back" class="btn btn-secondary">&larr; Back to Project Info</button>
+              <button type="button" id="step-3-next" class="btn btn-primary">Review & Finalize Submission &rarr;</button>
+            </div>
+          </section>
+
+          <!-- STEP 4: Review and Submit -->
+          <section class="step-content card" data-step="4">
+            <p class="section-label">Step 04 / 04</p>
+            <h2 style="margin:6px 0 20px;">Review Your Submission</h2>
+            <p style="margin-bottom:24px;">Please review the details of your architectural request before submitting to our design studio.</p>
+
+            <div class="review-summary-card">
+              <!-- Step 1 Summary -->
+              <div class="review-section">
+                <div class="review-section-header">
+                  <span class="review-section-title">01. Contact Information</span>
+                  <button type="button" class="text-link" data-goto-step="1">Edit</button>
+                </div>
+                <div class="review-grid">
+                  <div class="review-item"><strong>Client Name</strong><span id="rev-name">—</span></div>
+                  <div class="review-item"><strong>Email</strong><span id="rev-email">—</span></div>
+                  <div class="review-item"><strong>Phone Number</strong><span id="rev-phone">—</span></div>
+                </div>
+              </div>
+
+              <!-- Step 2 Summary -->
+              <div class="review-section">
+                <div class="review-section-header">
+                  <span class="review-section-title">02. Project Specifications</span>
+                  <button type="button" class="text-link" data-goto-step="2">Edit</button>
+                </div>
+                <div class="review-grid">
+                  <div class="review-item"><strong>Project Title</strong><span id="rev-title">—</span></div>
+                  <div class="review-item"><strong>Project Type</strong><span id="rev-type">—</span></div>
+                  <div class="review-item"><strong>Site Location</strong><span id="rev-location">—</span></div>
+                  <div class="review-item"><strong>Plot Area</strong><span id="rev-plot">—</span></div>
+                  <div class="review-item"><strong>Number of Floors</strong><span id="rev-floors">—</span></div>
+                  <div class="review-item"><strong>Estimated Budget</strong><span id="rev-budget">—</span></div>
+                  <div class="review-item" style="grid-column:1/-1;"><strong>Description</strong><span id="rev-desc">—</span></div>
+                </div>
+              </div>
+
+              <!-- Step 3 Summary -->
+              <div class="review-section">
+                <div class="review-section-header">
+                  <span class="review-section-title">03. Attached Documents</span>
+                  <button type="button" class="text-link" data-goto-step="3">Edit</button>
+                </div>
+                <p id="rev-files-summary" style="font-size:13px; color:var(--ink);">0 files attached</p>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; margin-top:32px;">
+              <button type="button" id="step-4-back" class="btn btn-secondary">&larr; Back to Documents</button>
+              <button type="button" id="submit-request-final-btn" class="btn btn-primary">
+                Submit Design Request &rarr;
+              </button>
+            </div>
+          </section>
+        </form>
+      </div>
+
+      <!-- Confirmation Screen (Shown upon successful submission) -->
+      <div id="confirmation-container" style="display:none;" class="card">
+        <div style="text-align:center; padding:30px 10px;">
+          <div style="width:64px; height:64px; border-radius:50%; background:var(--status-approved-bg); color:var(--status-approved); display:grid; place-items:center; margin:0 auto 20px;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+          <p class="section-label">Submission Confirmed</p>
+          <h2 style="font-size:36px; margin:8px 0 12px;">Request Successfully Registered</h2>
+          <p style="max-width:540px; margin:0 auto 20px; font-size:14px;">Your design request has been queued in our studio review queue. Our architectural team has received your plot dimensions and files.</p>
+
+          <div style="display:inline-block; padding:12px 24px; background:var(--sand-light); border:1px solid var(--sand); border-radius:10px; margin-bottom:32px;">
+            <span style="font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); display:block;">Your Request ID</span>
+            <strong id="conf-request-id" style="font-size:24px; font-family:monospace; color:var(--copper); letter-spacing:0.06em;">SGA-2026-0001</strong>
+          </div>
+
+          <div style="display:flex; justify-content:center; gap:16px; flex-wrap:wrap;">
+            <a id="conf-view-details-btn" href="request-details.html" class="btn btn-primary">
+              View Request & Timeline &rarr;
+            </a>
+            <a href="my-requests.html" class="btn btn-outline">
+              Back to My Requests
+            </a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { initNewRequest } from './js/requests.js';
+    initNewRequest();
+  </script>
+</body>
+</html>

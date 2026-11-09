@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity Audit Log — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 style="font-family:var(--font-serif); font-size:32px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+              Activity Audit Log
+            </h1>
+            <p style="font-size:13.5px; color:var(--admin-ink-muted); margin-top:4px;">
+              Immutable audit trail recording administrative mutations, note uploads, and status transitions.
+            </p>
+          </div>
+        </div>
+
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Administrator</th>
+                <th>Action Type</th>
+                <th>Target Entity</th>
+                <th>Summary of Change</th>
+              </tr>
+            </thead>
+            <tbody id="logs-tbody">
+              <tr><td colspan="5" style="text-align:center; padding:30px; color:var(--admin-ink-muted);">Loading audit logs...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    async function initPage() {
+      await initAdminShell('activity', 'Audit Activity Log');
+      const res = await adminApi.getActivityLogs(100);
+      if (!res.ok) return;
+
+      const tbody = document.getElementById('logs-tbody');
+      if (res.data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:40px; color:var(--admin-ink-muted);">No activity recorded yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = res.data.map(l => `
+        <tr>
+          <td style="font-size:11.5px; color:var(--admin-ink-muted); font-family:monospace;">
+            ${new Date(l.timestamp).toLocaleString()}
+          </td>
+          <td>
+            <strong style="color:var(--admin-ink); font-size:13px;">${l.adminName}</strong>
+            <span style="font-size:10.5px; color:var(--admin-ink-muted); display:block;">${l.adminEmail}</span>
+          </td>
+          <td>
+            <span class="tag-status status-sent" style="font-size:10.5px; font-family:monospace;">${l.action}</span>
+          </td>
+          <td>
+            <span style="font-size:11.5px; color:var(--admin-copper); font-weight:600;">${l.entityType}: ${l.entityId}</span>
+          </td>
+          <td>
+            <span style="font-size:12.5px; color:var(--admin-ink);">${l.summary}</span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    initPage();
+  </script>
+</body>
+</html>

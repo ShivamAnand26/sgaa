@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Notes Studio — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- PDF.js CDN for page count & cover rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  </script>
+  <style>
+    .notes-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 22px;
+    }
+    .note-card {
+      background: var(--admin-white);
+      border: 1px solid var(--admin-border);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .note-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    .note-cover-wrap {
+      height: 160px;
+      background: #181513;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .note-cover-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.85;
+    }
+    .note-card-body {
+      padding: 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .note-subject-pill {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--admin-copper);
+      margin-bottom: 6px;
+    }
+    .note-title {
+      font-family: var(--font-serif);
+      font-size: 19px;
+      font-weight: 600;
+      color: var(--admin-ink);
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+    .note-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--admin-ink-muted);
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid var(--admin-border-subtle);
+    }
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
+      display: none;
+      backdrop-filter: blur(4px);
+    }
+    .drawer-overlay.is-open { display: block; }
+    .drawer-content {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(560px, 100%);
+      background: var(--admin-white);
+      z-index: 101;
+      padding: 30px;
+      overflow-y: auto;
+      box-shadow: -10px 0 40px rgba(0,0,0,0.2);
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .drawer-overlay.is-open .drawer-content {
+      transform: translateX(0);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 style="font-family:var(--font-serif); font-size:32px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+              Study Notes Catalog
+            </h1>
+            <p style="font-size:13.5px; color:var(--admin-ink-muted); margin-top:4px;">
+              Manage verified architectural study notes, upload multi-page PDFs, inspect page counts, and adjust prices.
+            </p>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <div style="display:flex; align-items:center; gap:8px; padding:7px 14px; background:#E8F5E9; border:1px solid #C8E6C9; border-radius:8px; font-size:12px; color:#2E7D32;">
+              <span style="width:8px; height:8px; border-radius:50%; background:#2E7D32; display:inline-block; box-shadow:0 0 0 3px rgba(46,125,50,0.2);"></span>
+              <span><strong>PDF Database:</strong> Active (Persistent Server Storage)</span>
+            </div>
+            <button id="manage-subjects-btn" class="admin-btn" style="width:auto; background:var(--admin-sand); color:var(--admin-ink); border-color:var(--admin-border);">
+              <i data-lucide="folder-tree"></i>
+              <span>Manage Subjects</span>
+            </button>
+            <button id="add-note-btn" class="admin-btn" style="width:auto;">
+              <i data-lucide="plus"></i>
+              <span>Upload & Publish Note</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filters Toolbar -->
+        <div class="notes-toolbar">
+          <div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+            <input type="text" id="search-input" placeholder="Search notes by title or subject..." class="admin-input" style="width:280px; padding:8px 14px 8px 36px; background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+            <select id="category-filter" class="admin-input" style="width:auto; padding:8px 12px; background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+              <option value="all">All Categories</option>
+              <option value="structures">Structures & Engineering</option>
+              <option value="history">Architectural History</option>
+              <option value="planning">Urban Planning & Zoning</option>
+              <option value="materials">Building Materials & Masonry</option>
+              <option value="design">Architectural Design & Studio</option>
+              <option value="estimation">Estimation & Professional Practice</option>
+            </select>
+          </div>
+          <div style="font-size:12.5px; color:var(--admin-ink-muted);">
+            Showing <strong id="notes-count">0</strong> study notes
+          </div>
+        </div>
+
+        <!-- Notes Grid -->
+        <div class="notes-grid" id="notes-grid-container">
+          <div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--admin-ink-muted);">Loading catalog...</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add / Edit Note Drawer -->
+  <div class="drawer-overlay" id="note-drawer">
+    <div class="drawer-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--admin-border); padding-bottom:16px;">
+        <h2 id="drawer-title" style="font-family:var(--font-serif); font-size:24px; font-weight:600; color:var(--admin-ink);">
+          Upload Architectural Note
+        </h2>
+        <button id="close-drawer-btn" style="background:none; border:none; cursor:pointer; color:var(--admin-ink-muted); padding:4px;">
+          <i data-lucide="x" style="width:20px; height:20px;"></i>
+        </button>
+      </div>
+
+      <form id="note-form">
+        <input type="hidden" id="edit-id">
+
+        <div class="admin-form-group">
+          <label style="color:var(--admin-ink);">Note Title</label>
+          <input type="text" id="note-title" class="admin-input" placeholder="e.g. Seismic Design of Multistory Buildings" required style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div class="admin-form-group">
+            <label style="color:var(--admin-ink);">Subject</label>
+            <div id="subject-combobox-wrap">
+              <!-- When subjects exist, select dropdown renders here; fallback text input when empty -->
+              <select id="note-subject-select" class="admin-input" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+                <option value="">Loading subjects...</option>
+              </select>
+              <div id="note-subject-new-wrap" style="display:none; margin-top:8px;">
+                <input type="text" id="note-subject-new" class="admin-input" placeholder="Type new subject, e.g. Building Construction" maxlength="60" style="background:var(--admin-white); border-color:var(--admin-copper); color:var(--admin-ink);">
+                <small style="font-size:11px; color:var(--admin-ink-muted); display:block; margin-top:3px;">Saves automatically with this note.</small>
+              </div>
+            </div>
+            <input type="hidden" id="note-subject" required>
+          </div>
+          <div class="admin-form-group">
+            <label style="color:var(--admin-ink);">Category</label>
+            <select id="note-category" class="admin-input" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+              <option value="structures">Structures & Engineering</option>
+              <option value="history">Architectural History</option>
+              <option value="planning">Urban Planning & Zoning</option>
+              <option value="materials">Building Materials & Masonry</option>
+              <option value="design">Architectural Design & Studio</option>
+              <option value="estimation">Estimation & Professional Practice</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div class="admin-form-group">
+            <label style="color:var(--admin-ink);">Price (INR ₹)</label>
+            <input type="number" id="note-price" class="admin-input" value="499" min="0" required style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+          </div>
+          <div class="admin-form-group">
+            <label style="color:var(--admin-ink);">Free Preview Pages</label>
+            <input type="number" id="note-preview-pages" class="admin-input" value="3" min="1" max="10" required style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+          </div>
+        </div>
+
+        <div class="admin-form-group">
+          <label style="color:var(--admin-ink);">Description & Syllabus Coverage</label>
+          <textarea id="note-desc" rows="3" class="admin-input" placeholder="Core theories, formula sheets, construction blueprints and case study summaries..." style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink); height:auto;"></textarea>
+        </div>
+
+        <div class="admin-form-group">
+          <label style="color:var(--admin-ink);">Key Topics / Chapters (Comma separated)</label>
+          <input type="text" id="note-topics" class="admin-input" placeholder="Lateral shear walls, IS 1893 norms, Response spectrum method" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+        </div>
+
+        <div class="admin-form-group" style="background:var(--admin-sand-light); border:1px solid var(--admin-sand); border-radius:8px; padding:16px;">
+          <label style="color:var(--admin-ink); margin-bottom:4px;">Upload PDF Document</label>
+          <input type="file" id="note-pdf-file" accept="application/pdf" style="font-size:12.5px; margin-top:6px;">
+          <div style="font-size:11px; color:var(--admin-ink-muted); margin-top:6px;" id="pdf-feedback">
+            PDF magic bytes (%PDF-) and total pages will be extracted via PDF.js.
+          </div>
+          <!-- Hidden canvas for rendering page 1 cover -->
+          <canvas id="pdf-cover-canvas" style="display:none;"></canvas>
+        </div>
+
+        <div class="admin-form-group">
+          <label class="admin-checkbox-label" style="color:var(--admin-ink);">
+            <input type="checkbox" id="note-publish-toggle" checked>
+            <span>Publish immediately to student portal</span>
+          </label>
+        </div>
+
+        <div style="display:flex; gap:12px; margin-top:24px;">
+          <button type="submit" id="save-note-btn" class="admin-btn">
+            <span>Save & Publish Note</span>
+          </button>
+          <button type="button" id="cancel-drawer-btn" class="admin-btn" style="background:none; border-color:var(--admin-border); color:var(--admin-ink); box-shadow:none;">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Manage Subjects Modal -->
+  <div class="drawer-overlay" id="subjects-modal" style="display:none; z-index:150;">
+    <div style="background:var(--admin-white); width:min(640px, 94%); max-height:85vh; border-radius:12px; margin:5vh auto; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,0.3); display:flex; flex-direction:column; overflow:hidden;">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--admin-border); padding-bottom:14px; margin-bottom:18px;">
+        <div>
+          <h2 style="font-family:var(--font-serif); font-size:24px; font-weight:600; color:var(--admin-ink);">Manage Academic Subjects</h2>
+          <p style="font-size:12px; color:var(--admin-ink-muted); margin-top:2px;">Subjects are dynamic and synchronized across website & student portal.</p>
+        </div>
+        <button id="close-subjects-modal-btn" style="background:none; border:none; cursor:pointer; color:var(--admin-ink-muted); padding:4px;">
+          <i data-lucide="x" style="width:20px; height:20px;"></i>
+        </button>
+      </div>
+
+      <!-- Add New Subject Form Inline -->
+      <form id="add-subject-inline-form" style="display:flex; gap:10px; margin-bottom:18px;">
+        <input type="text" id="inline-new-subject-name" class="admin-input" placeholder="Enter new subject name, e.g. Building Cladding & Façades" maxlength="60" required style="flex:1; background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+        <button type="submit" class="admin-btn" style="width:auto; padding:0 18px; white-space:nowrap;">
+          <i data-lucide="plus"></i>
+          <span>Add Subject</span>
+        </button>
+      </form>
+
+      <!-- Subjects Table -->
+      <div style="overflow-y:auto; flex:1; border:1px solid var(--admin-border-subtle); border-radius:8px;">
+        <table style="width:100%; border-collapse:collapse; font-size:13px; text-align:left;">
+          <thead style="background:var(--admin-sand-light); border-bottom:1px solid var(--admin-border);">
+            <tr>
+              <th style="padding:10px 14px; font-weight:600;">Subject Name</th>
+              <th style="padding:10px 14px; font-weight:600; width:110px;">Notes Attached</th>
+              <th style="padding:10px 14px; font-weight:600; width:130px; text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="subjects-table-body">
+            <tr><td colspan="3" style="padding:20px; text-align:center; color:var(--admin-ink-muted);">Loading subjects...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { db } from '../client/js/db.js';
+    import { initAdminShell } from './js/admin-shell.js';
+    import { firebaseDataService } from '../client/js/firebase.js';
+
+    let allNotes = [];
+    let allSubjects = [];
+
+    async function initPage() {
+      await initAdminShell('notes', 'Study Notes Catalog');
+      await loadSubjects();
+      await loadNotes();
+      initSubjectEvents();
+    }
+
+    async function loadSubjects() {
+      const res = await adminApi.listSubjects();
+      if (res.ok) {
+        allSubjects = res.data;
+        populateSubjectCombobox();
+        renderSubjectsTable();
+      }
+    }
+
+    function renderNotesGrid(notes) {
+      const container = document.getElementById('notes-grid-container');
+      document.getElementById('notes-count').textContent = notes.length;
+
+      if (!notes || notes.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column:1/-1; text-align:center; padding:60px 20px; background:var(--admin-white); border:1px solid var(--admin-border); border-radius:10px;">
+            <p style="font-size:15px; color:var(--admin-ink); margin-bottom:8px;">No study notes in catalog.</p>
+            <p style="font-size:13px; color:var(--admin-ink-muted); margin-bottom:16px;">Upload a PDF to publish study notes for students.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = notes.map(n => `
+        <article class="note-card">
+          <div class="note-cover-wrap">
+            ${n.coverUrl ? `<img src="${n.coverUrl}" class="note-cover-img" alt="${n.title}">` : `
+              <div style="text-align:center; color:#D9B77E;">
+                <i data-lucide="file-text" style="width:40px; height:40px; stroke-width:1.3;"></i>
+                <div style="font-size:11px; margin-top:6px; letter-spacing:0.1em; text-transform:uppercase;">Architectural Notes</div>
+              </div>
+            `}
+            <span style="position:absolute; top:10px; right:10px; font-size:10.5px; font-weight:700; padding:3px 8px; border-radius:4px; background:${n.status === 'published' ? '#2E7D32' : '#B78103'}; color:#FFF;">
+              ${n.status === 'published' ? 'Published' : 'Draft'}
+            </span>
+          </div>
+
+          <div class="note-card-body">
+            <span class="note-subject-pill">${n.subject || 'Architecture'}</span>
+            <h3 class="note-title">${n.title}</h3>
+            <p style="font-size:12px; color:var(--admin-ink-muted); line-height:1.5; margin-bottom:12px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">
+              ${n.description || 'Verified multi-page architectural study document with diagrams and calculations.'}
+            </p>
+
+            <div class="note-meta-row">
+              <div>
+                <strong style="font-size:16px; color:var(--admin-ink);">₹${(n.price || 0).toLocaleString('en-IN')}</strong>
+                <span style="font-size:11px; margin-left:4px;">· ${n.pageCount || 1} pages</span>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button class="edit-btn" data-id="${n.id}" style="background:none; border:none; color:var(--admin-copper); cursor:pointer; font-weight:600; font-size:12px;">Edit</button>
+                <button class="del-btn" data-id="${n.id}" style="background:none; border:none; color:#C0392B; cursor:pointer; font-size:12px;">Delete</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      `).join('');
+
+      if (window.lucide) window.lucide.createIcons();
+
+      // Bind edit and delete
+      container.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', () => openEditDrawer(btn.dataset.id));
+      });
+      container.querySelectorAll('.del-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (confirm('Delete this study note from the student catalog?')) {
+            await adminApi.deleteNote(btn.dataset.id);
+            await loadNotes();
+          }
+        });
+      });
+    }
+    async function loadNotes() {
+      const res = await adminApi.getNotes();
+      if (res.ok) {
+        allNotes = res.data;
+        renderNotesGrid(allNotes);
+      }
+    }
+
+    function populateSubjectCombobox(selectedSubject = '') {
+      const select = document.getElementById('note-subject-select');
+      const newWrap = document.getElementById('note-subject-new-wrap');
+      const newInput = document.getElementById('note-subject-new');
+      const hiddenInput = document.getElementById('note-subject');
+
+      select.innerHTML = '';
+
+      if (!allSubjects || allSubjects.length === 0) {
+        // When no subjects exist yet: show a plain text input with the hint
+        select.style.display = 'none';
+        newWrap.style.display = 'block';
+        newInput.placeholder = 'Type your first subject, for example Building Construction';
+        if (selectedSubject) newInput.value = selectedSubject;
+        hiddenInput.value = selectedSubject || '';
+        return;
+      }
+
+      select.style.display = 'block';
+      // Populate saved subjects
+      let matchFound = false;
+      allSubjects.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.name;
+        opt.textContent = `${s.name} (${s.noteCount || 0} notes)`;
+        if (selectedSubject && s.name.toLowerCase().trim() === selectedSubject.toLowerCase().trim()) {
+          opt.selected = true;
+          matchFound = true;
+        }
+        select.appendChild(opt);
+      });
+
+      // Add last option: "+ Add new subject"
+      const addOpt = document.createElement('option');
+      addOpt.value = '__ADD_NEW__';
+      addOpt.textContent = '+ Add new subject...';
+      select.appendChild(addOpt);
+
+      if (selectedSubject && !matchFound) {
+        // Pre-fill as custom new subject
+        addOpt.selected = true;
+        newWrap.style.display = 'block';
+        newInput.value = selectedSubject;
+        hiddenInput.value = selectedSubject;
+      } else if (matchFound) {
+        newWrap.style.display = 'none';
+        hiddenInput.value = select.value;
+      } else {
+        newWrap.style.display = 'none';
+        hiddenInput.value = select.value === '__ADD_NEW__' ? '' : select.value;
+      }
+
+      select.onchange = () => {
+        if (select.value === '__ADD_NEW__' || select.value === '__NEW__') {
+          newWrap.style.display = 'block';
+          newInput.focus();
+          hiddenInput.value = newInput.value.trim();
+        } else {
+          newWrap.style.display = 'none';
+          hiddenInput.value = select.value;
+        }
+      };
+
+      newInput.oninput = () => {
+        hiddenInput.value = newInput.value.trim();
+      };
+    }
+
+    function initSubjectEvents() {
+      const modal = document.getElementById('subjects-modal');
+      const openBtn = document.getElementById('manage-subjects-btn');
+      const closeBtn = document.getElementById('close-subjects-modal-btn');
+      const addForm = document.getElementById('add-subject-inline-form');
+
+      if (openBtn) {
+        openBtn.addEventListener('click', async () => {
+          modal.style.display = 'block';
+          await loadSubjects();
+          if (window.lucide) window.lucide.createIcons();
+        });
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          modal.style.display = 'none';
+        });
+      }
+
+      if (addForm) {
+        addForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const nameInput = document.getElementById('inline-new-subject-name');
+          const name = nameInput.value.trim();
+          if (!name) return;
+          const res = await adminApi.addSubject(name);
+          if (res.ok) {
+            nameInput.value = '';
+            await loadSubjects();
+            alert(`Subject "${name}" added successfully.`);
+          } else {
+            alert(res.error || 'Failed to add subject');
+          }
+        });
+      }
+    }
+
+    function renderSubjectsTable() {
+      const tbody = document.getElementById('subjects-table-body');
+      if (!tbody) return;
+
+      if (!allSubjects || allSubjects.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="padding:24px; text-align:center; color:var(--admin-ink-muted);">No subjects created yet. Add one above!</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = '';
+      allSubjects.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.style.borderBottom = '1px solid var(--admin-border-subtle)';
+        
+        const tdName = document.createElement('td');
+        tdName.style.padding = '10px 14px';
+        tdName.style.fontWeight = '500';
+        tdName.textContent = s.name;
+        tr.appendChild(tdName);
+
+        const tdCount = document.createElement('td');
+        tdCount.style.padding = '10px 14px';
+        const spanBadge = document.createElement('span');
+        spanBadge.style.cssText = 'display:inline-block; padding:2px 8px; border-radius:10px; background:var(--admin-sand); font-size:11.5px; font-weight:600;';
+        spanBadge.textContent = String(s.noteCount || 0);
+        tdCount.appendChild(spanBadge);
+        tr.appendChild(tdCount);
+
+        const tdActions = document.createElement('td');
+        tdActions.style.cssText = 'padding:10px 14px; text-align:right;';
+        
+        const renameBtn = document.createElement('button');
+        renameBtn.className = 'rename-sub-btn';
+        renameBtn.dataset.id = s.id;
+        renameBtn.dataset.name = s.name;
+        renameBtn.style.cssText = 'background:none; border:none; color:var(--admin-copper); cursor:pointer; font-size:12px; font-weight:600; margin-right:8px;';
+        renameBtn.textContent = 'Rename';
+        tdActions.appendChild(renameBtn);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-sub-btn';
+        deleteBtn.dataset.id = s.id;
+        deleteBtn.dataset.name = s.name;
+        deleteBtn.dataset.count = String(s.noteCount || 0);
+        deleteBtn.style.cssText = 'background:none; border:none; color:var(--admin-danger); cursor:pointer; font-size:12px; font-weight:600;';
+        deleteBtn.textContent = 'Delete';
+        tdActions.appendChild(deleteBtn);
+
+        tr.appendChild(tdActions);
+        tbody.appendChild(tr);
+      });
+
+      tbody.querySelectorAll('.rename-sub-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.id;
+          const oldName = btn.dataset.name;
+          const newName = prompt(`Rename subject "${oldName}" to:`, oldName);
+          if (newName && newName.trim() && newName.trim() !== oldName) {
+            const res = await adminApi.renameSubject(id, newName.trim());
+            if (res.ok) {
+              await loadSubjects();
+              await loadNotes();
+            } else {
+              alert(res.error || 'Failed to rename subject');
+            }
+          }
+        });
+      });
+
+      tbody.querySelectorAll('.delete-sub-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.id;
+          const name = btn.dataset.name;
+          const count = parseInt(btn.dataset.count, 10) || 0;
+
+          if (count > 0) {
+            const otherSubjects = allSubjects.filter(s => s.id !== id);
+            if (otherSubjects.length === 0) {
+              alert(`Cannot delete "${name}" because ${count} notes use it, and there are no other subjects to move them to.`);
+              return;
+            }
+            const targetName = prompt(`This subject has ${count} note(s). Enter the exact name of another subject to move these notes to:\nAvailable: ${otherSubjects.map(s => s.name).join(', ')}`);
+            if (!targetName) return;
+            const targetSub = otherSubjects.find(s => s.name.toLowerCase().trim() === targetName.toLowerCase().trim());
+            if (!targetSub) {
+              alert('Target subject name not found.');
+              return;
+            }
+            const res = await adminApi.deleteSubject(id, targetSub.id);
+            if (res.ok) {
+              await loadSubjects();
+              await loadNotes();
+              alert(`Subject deleted and notes moved to "${targetSub.name}".`);
+            } else {
+              alert(res.error || 'Failed to delete subject');
+            }
+          } else {
+            if (confirm(`Are you sure you want to delete subject "${name}"?`)) {
+              const res = await adminApi.deleteSubject(id);
+              if (res.ok) {
+                await loadSubjects();
+              } else {
+                alert(res.error || 'Failed to delete subject');
+              }
+            }
+          }
+        });
+      });
+    }
+
+    // Drawer elements
+    const drawer = document.getElementById('note-drawer');
+    const addBtn = document.getElementById('add-note-btn');
+    const closeBtn = document.getElementById('close-drawer-btn');
+    const cancelBtn = document.getElementById('cancel-drawer-btn');
+    const form = document.getElementById('note-form');
+
+    function openDrawer(isEdit = false) {
+      drawer.classList.add('is-open');
+      document.getElementById('drawer-title').textContent = isEdit ? 'Edit Architectural Note' : 'Upload & Publish Note';
+      if (!isEdit) {
+        form.reset();
+        populateSubjectCombobox();
+      }
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove('is-open');
+    }
+
+    addBtn.addEventListener('click', () => {
+      document.getElementById('edit-id').value = '';
+      openDrawer(false);
+    });
+    closeBtn.addEventListener('click', closeDrawer);
+    cancelBtn.addEventListener('click', closeDrawer);
+
+    async function openEditDrawer(id) {
+      const res = await adminApi.getNote(id);
+      if (!res.ok) return;
+      const n = res.data;
+
+      document.getElementById('edit-id').value = n.id;
+      document.getElementById('note-title').value = n.title;
+      populateSubjectCombobox(n.subject || '');
+      document.getElementById('note-category').value = n.category || 'history';
+      document.getElementById('note-price').value = n.price;
+      document.getElementById('note-preview-pages').value = n.previewPages || 3;
+      document.getElementById('note-desc').value = n.description || '';
+      document.getElementById('note-topics').value = (n.keyTopics || []).join(', ');
+      document.getElementById('note-publish-toggle').checked = n.status === 'published';
+
+      openDrawer(true);
+    }
+
+    // Handle Form Submit
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const saveBtn = document.getElementById('save-note-btn');
+      saveBtn.disabled = true;
+      saveBtn.querySelector('span').textContent = 'Uploading & Publishing...';
+
+      try {
+        const editId = document.getElementById('edit-id').value;
+        const title = document.getElementById('note-title').value.trim();
+        let subject = document.getElementById('note-subject').value.trim();
+        const newSubjectInput = document.getElementById('note-subject-new');
+        const subjectSelect = document.getElementById('note-subject-select');
+        
+        if (newSubjectInput && newSubjectInput.value.trim() && (subjectSelect.value === '__ADD_NEW__' || subjectSelect.value === '__NEW__' || !allSubjects || allSubjects.length === 0 || !subject)) {
+          const rawSub = newSubjectInput.value.trim().substring(0, 60);
+          const addRes = await adminApi.addSubject(rawSub);
+          subject = (addRes.ok && addRes.data) ? addRes.data.name : rawSub;
+          await loadSubjects();
+        }
+
+        if (!title) {
+          alert('Please enter a note title.');
+          saveBtn.disabled = false;
+          saveBtn.querySelector('span').textContent = 'Save & Publish Note';
+          return;
+        }
+
+        if (!subject) {
+          alert('Please enter or select an academic subject.');
+          saveBtn.disabled = false;
+          saveBtn.querySelector('span').textContent = 'Save & Publish Note';
+          return;
+        }
+
+        const category = document.getElementById('note-category').value;
+        const price = parseFloat(document.getElementById('note-price').value) || 0;
+        const previewPages = parseInt(document.getElementById('note-preview-pages').value, 10) || 3;
+        const description = document.getElementById('note-desc').value.trim();
+        const keyTopics = document.getElementById('note-topics').value.split(',').map(s => s.trim()).filter(Boolean);
+        const isPublished = document.getElementById('note-publish-toggle').checked;
+        const pdfFile = document.getElementById('note-pdf-file').files[0];
+
+        let pageCount = 12; // default
+        let coverUrl = '';
+
+        if (pdfFile) {
+          // Inspect magic bytes (%PDF-)
+          const buf = await pdfFile.slice(0, 5).text();
+          if (!buf.startsWith('%PDF-')) {
+            alert('Invalid file format: File header is missing %PDF- signature.');
+            saveBtn.disabled = false;
+            saveBtn.querySelector('span').textContent = 'Save & Publish Note';
+            return;
+          }
+
+          // Extract page count & render canvas thumbnail
+          try {
+            if (window.pdfjsLib) {
+              const arrayBuffer = await pdfFile.arrayBuffer();
+              const pdfDoc = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+              pageCount = pdfDoc.numPages;
+
+              // Render page 1 to canvas
+              const page1 = await pdfDoc.getPage(1);
+              const canvas = document.getElementById('pdf-cover-canvas');
+              const viewport = page1.getViewport({ scale: 0.6 });
+              canvas.width = viewport.width;
+              canvas.height = viewport.height;
+              const ctx = canvas.getContext('2d');
+              await page1.render({ canvasContext: ctx, viewport }).promise;
+              coverUrl = canvas.toDataURL('image/jpeg', 0.85);
+            }
+          } catch (err) {
+            console.warn('PDF.js thumbnail extraction fallback:', err);
+          }
+        }
+
+        // Build FormData for single-pass fast multipart upload
+        const formData = new FormData();
+        if (editId) formData.append('id', editId);
+        formData.append('title', title);
+        formData.append('subject', subject);
+        formData.append('category', category);
+        formData.append('price', String(price));
+        formData.append('pages', String(pageCount));
+        formData.append('pageCount', String(pageCount));
+        formData.append('previewPages', String(previewPages));
+        formData.append('description', description);
+        formData.append('keyTopics', JSON.stringify(keyTopics));
+        formData.append('published', String(isPublished));
+        formData.append('status', isPublished ? 'published' : 'draft');
+        if (coverUrl) formData.append('coverUrl', coverUrl);
+        if (pdfFile) formData.append('pdf', pdfFile);
+
+        const endpoint = editId ? `/api/notes/${encodeURIComponent(editId)}` : '/api/notes';
+        const srvResp = await fetch(endpoint, {
+          method: 'POST',
+          body: formData
+        });
+
+        if (!srvResp.ok) {
+          throw new Error(`Server returned HTTP ${srvResp.status}`);
+        }
+
+        const resJson = await srvResp.json();
+        const savedNote = resJson.data;
+
+        // Cache PDF in local IndexedDB for immediate offline access
+        if (pdfFile && savedNote) {
+          try {
+            const storedRecord = await db.storeBlob(pdfFile, {
+              id: `NOTE_BLOB_${savedNote.id}`,
+              name: pdfFile.name,
+              type: 'application/pdf',
+              size: pdfFile.size,
+              category: 'study_note'
+            });
+            savedNote.fileBlobId = storedRecord.id;
+            savedNote.fileId = storedRecord.id;
+          } catch (blobErr) {
+            console.warn('IndexedDB store warning:', blobErr);
+          }
+        }
+
+        // Update local notes store
+        const currentNotes = db.get(db.KEYS.NOTES) || [];
+        const existingIdx = currentNotes.findIndex(n => n.id === savedNote.id);
+        if (existingIdx !== -1) {
+          currentNotes[existingIdx] = { ...currentNotes[existingIdx], ...savedNote };
+        } else {
+          currentNotes.unshift(savedNote);
+        }
+        db.set(db.KEYS.NOTES, currentNotes);
+
+        // Background sync to Firestore (non-blocking)
+        firebaseDataService.saveNote(savedNote).catch(e => console.warn('[Firebase] note sync:', e));
+
+        // Audit log in admin
+        adminApi.logActivity({
+          action: editId ? 'NOTE_UPDATED' : 'NOTE_CREATED',
+          entityType: 'NOTE',
+          entityId: savedNote.id,
+          summary: `${editId ? 'Updated' : 'Created & published'} study note "${savedNote.title}"`
+        }).catch(() => {});
+
+        closeDrawer();
+        await loadNotes();
+
+        alert(`Study note "${savedNote.title}" uploaded and published successfully! It is now live in the Student Portal.`);
+      } catch (err) {
+        console.error('Note upload error:', err);
+        alert('Failed to save study note: ' + err.message);
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.querySelector('span').textContent = 'Save & Publish Note';
+      }
+    });
+
+
+
+    // Search and Filter
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      const filtered = allNotes.filter(n => n.title.toLowerCase().includes(q) || n.subject.toLowerCase().includes(q));
+      renderNotesGrid(filtered);
+    });
+
+    document.getElementById('category-filter').addEventListener('change', (e) => {
+      const cat = e.target.value;
+      const filtered = cat === 'all' ? allNotes : allNotes.filter(n => n.category === cat);
+      renderNotesGrid(filtered);
+    });
+
+    initPage();
+  </script>
+</body>
+</html>

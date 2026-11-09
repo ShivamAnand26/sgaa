@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+         request.auth.token.email == 'vikasverma_gola@sga.in' ||
+         request.auth.token.email == 'admin@sga.in');
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId) || isAdmin();
+    }
+
+    // Design Requests collection
+    match /requests/{requestId} {
+      allow read: if isAuthenticated() && (resource.data.clientId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && (request.resource.data.clientId == request.auth.uid || isAdmin());
+      allow update, delete: if isAuthenticated() && (resource.data.clientId == request.auth.uid || isAdmin());
+    }
+
+    // Study Notes collection - accessible across student and admin portals in all browsers
+    match /notes/{noteId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    match /note_files/{fileId} {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Orders collection
+    match /orders/{orderId} {
+      allow read: if isAuthenticated() && (resource.data.studentId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && (request.resource.data.studentId == request.auth.uid || isAdmin());
+      allow update, delete: if isAdmin();
+    }
+
+    // Proposals collection
+    match /proposals/{proposalId} {
+      allow read: if isAuthenticated() && (resource.data.clientId == request.auth.uid || isAdmin());
+      allow write: if isAdmin() || (isAuthenticated() && resource.data.clientId == request.auth.uid && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'acceptedByName', 'acceptedAt', 'clientFeedback']));
+    }
+
+    // Contact Messages collection
+    match /contact_messages/{messageId} {
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

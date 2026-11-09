@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Details — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .details-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .details-grid { grid-template-columns: 1fr; }
+    }
+    .panel {
+      background: var(--admin-white);
+      border: 1px solid var(--admin-border);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .spec-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--admin-border-subtle);
+    }
+    .spec-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--admin-ink-muted);
+    }
+    .spec-val {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--admin-ink);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <!-- Top Navigation & Action -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+          <a href="admin-requests.html" style="display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color:var(--admin-copper); font-weight:600;">
+            <i data-lucide="arrow-left" style="width:14px; height:14px;"></i>
+            <span>Back to All Requests</span>
+          </a>
+          <div id="proposal-cta-container"></div>
+        </div>
+
+        <div class="details-grid">
+          <!-- Left Column: Project Brief & Scope -->
+          <div>
+            <div class="panel">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px; flex-wrap:wrap; gap:10px;">
+                <div>
+                  <span id="req-id-pill" style="font-size:11px; font-weight:700; color:var(--admin-copper); font-family:monospace;">REQ-ID</span>
+                  <h1 id="req-title" style="font-family:var(--font-serif); font-size:28px; font-weight:600; color:var(--admin-ink); margin-top:2px;">Project Title</h1>
+                </div>
+                <span id="req-status-tag" class="tag-status" style="font-size:12px; padding:4px 10px;">Status</span>
+              </div>
+
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:16px; margin:20px 0; background:var(--admin-sand-light); padding:16px; border-radius:8px; border:1px solid var(--admin-sand);">
+                <div>
+                  <span class="spec-label">Project Type</span>
+                  <div id="req-type" class="spec-val" style="text-transform:capitalize;">Residential</div>
+                </div>
+                <div>
+                  <span class="spec-label">Plot Dimensions</span>
+                  <div id="req-plot" class="spec-val">0 sq.ft</div>
+                </div>
+                <div>
+                  <span class="spec-label">Location</span>
+                  <div id="req-location" class="spec-val">India</div>
+                </div>
+                <div>
+                  <span class="spec-label">Estimated Budget</span>
+                  <div id="req-budget" class="spec-val">₹0</div>
+                </div>
+              </div>
+
+              <div style="margin-top:24px;">
+                <h3 style="font-family:var(--font-serif); font-size:18px; margin-bottom:10px;">Requested Scope Deliverables</h3>
+                <div id="req-scope-items" style="display:flex; flex-direction:column; gap:8px;"></div>
+              </div>
+            </div>
+
+            <!-- Attached Files & Site Surveys -->
+            <div class="panel">
+              <h3 style="font-family:var(--font-serif); font-size:20px; font-weight:600; margin-bottom:14px;">Attached Client Documents & Contour Surveys</h3>
+              <div id="req-files-container" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:14px;">
+                <p style="font-size:12.5px; color:var(--admin-ink-muted);">No files attached to this request.</p>
+              </div>
+            </div>
+
+            <!-- Linked Proposals -->
+            <div class="panel">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h3 style="font-family:var(--font-serif); font-size:20px; font-weight:600;">Proposals for this Project</h3>
+                <a id="create-proposal-link" href="#" class="admin-btn" style="padding:5px 12px; font-size:11.5px; width:auto;">
+                  + Draft New Proposal
+                </a>
+              </div>
+              <div id="proposals-list" style="display:flex; flex-direction:column; gap:10px;">
+                <p style="font-size:12.5px; color:var(--admin-ink-muted);">No proposals created yet.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Status Transition & Client Contact -->
+          <div>
+            <!-- Status Update Action Card -->
+            <div class="panel">
+              <h3 style="font-family:var(--font-serif); font-size:19px; font-weight:600; margin-bottom:16px;">Update Project Stage</h3>
+              
+              <div class="admin-form-group">
+                <label>Change Status</label>
+                <select id="update-status-select" class="admin-input" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+                  <option value="submitted">Submitted</option>
+                  <option value="under_review">Under Review</option>
+                  <option value="approved">Approved</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+              </div>
+
+              <div class="admin-form-group">
+                <label>Status Update Note (Client Visible)</label>
+                <textarea id="update-status-note" rows="2" class="admin-input" placeholder="e.g. Contour levels verified with local municipal guidelines." style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink); height:auto;"></textarea>
+              </div>
+
+              <button id="apply-status-btn" class="admin-btn">
+                <span>Update Status & Notify Client</span>
+              </button>
+            </div>
+
+            <!-- Client Info Card -->
+            <div class="panel">
+              <h3 style="font-family:var(--font-serif); font-size:19px; font-weight:600; margin-bottom:14px;">Client Information</h3>
+              <div class="spec-item">
+                <span class="spec-label">Client Name</span>
+                <span id="client-name" class="spec-val">Client</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Email Address</span>
+                <span id="client-email" class="spec-val">client@sga.in</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Phone</span>
+                <span id="client-phone" class="spec-val">+91 00000 00000</span>
+              </div>
+            </div>
+
+            <!-- Internal Studio Remarks -->
+            <div class="panel">
+              <h3 style="font-family:var(--font-serif); font-size:19px; font-weight:600; margin-bottom:12px;">Studio Internal Notes</h3>
+              <p style="font-size:11px; color:var(--admin-ink-muted); margin-bottom:12px;">Only visible to architects and administrators.</p>
+              
+              <div class="admin-form-group">
+                <textarea id="internal-remark-input" rows="2" class="admin-input" placeholder="Add confidential structural or site remark..." style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink); height:auto;"></textarea>
+              </div>
+              <button id="add-remark-btn" class="admin-btn" style="padding:7px 12px; font-size:11.5px; width:auto; background:var(--admin-sand); color:var(--admin-ink); border-color:var(--admin-border); box-shadow:none;">
+                + Add Internal Note
+              </button>
+
+              <div id="remarks-timeline" style="margin-top:16px; display:flex; flex-direction:column; gap:8px;"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const requestId = urlParams.get('id');
+
+    async function initPage() {
+      await initAdminShell('requests', 'Request Details');
+      if (!requestId) {
+        alert('No request ID specified.');
+        window.location.href = 'admin-requests.html';
+        return;
+      }
+      await loadDetails();
+    }
+
+    async function loadDetails() {
+      const res = await adminApi.getRequest(requestId);
+      if (!res.ok) {
+        alert(res.error || 'Request not found.');
+        return;
+      }
+      const r = res.data;
+
+      document.getElementById('req-id-pill').textContent = r.id;
+      document.getElementById('req-title').textContent = r.title;
+      document.getElementById('req-type').textContent = (r.projectType || 'residential').replace('_', ' ');
+      document.getElementById('req-plot').textContent = `${(r.plotAreaSqFt || 0).toLocaleString()} sq.ft (${r.plotLength || 0} x ${r.plotWidth || 0} ${r.plotUnit || 'ft'})`;
+      document.getElementById('req-location').textContent = r.siteLocation || 'N/A';
+      document.getElementById('req-budget').textContent = `₹${((r.budgetMin || 0)/100000).toFixed(1)}L - ₹${((r.budgetMax || 0)/100000).toFixed(1)}L`;
+      
+      const statusTag = document.getElementById('req-status-tag');
+      statusTag.textContent = (r.status || 'submitted').replace('_', ' ');
+      statusTag.className = `tag-status status-${r.status}`;
+      document.getElementById('update-status-select').value = r.status || 'submitted';
+
+      // Scope items
+      const scopeWrap = document.getElementById('req-scope-items');
+      const items = r.scopeItems || ['Concept Design & Zoning', '2D Architectural Drawings', '3D Renderings'];
+      scopeWrap.innerHTML = items.map(item => `
+        <div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--admin-ink);">
+          <i data-lucide="check-circle" style="width:16px; height:16px; color:var(--admin-copper);"></i>
+          <span>${item}</span>
+        </div>
+      `).join('');
+
+      // Client info
+      document.getElementById('client-name').textContent = r.clientName || 'Client';
+      document.getElementById('client-email').textContent = r.clientEmail || 'N/A';
+      document.getElementById('client-phone').textContent = r.clientPhone || 'Not provided';
+
+      // Create proposal link prefill
+      document.getElementById('create-proposal-link').href = `admin-proposals.html?requestId=${r.id}&clientId=${r.clientId || r.userId}&clientName=${encodeURIComponent(r.clientName || '')}&clientEmail=${encodeURIComponent(r.clientEmail || '')}`;
+
+      // Proposals list
+      const propWrap = document.getElementById('proposals-list');
+      if (r.proposals && r.proposals.length > 0) {
+        propWrap.innerHTML = r.proposals.map(p => `
+          <div style="padding:12px; border:1px solid var(--admin-border); border-radius:8px; display:flex; justify-content:space-between; align-items:center; background:var(--admin-sand-light);">
+            <div>
+              <strong style="display:block; font-size:13px; color:var(--admin-ink);">${p.id} · ₹${(p.totalAmount || 0).toLocaleString('en-IN')}</strong>
+              <span style="font-size:11px; color:var(--admin-ink-muted);">${p.title}</span>
+            </div>
+            <span class="tag-status status-${p.status}">${p.status}</span>
+          </div>
+        `).join('');
+      } else {
+        propWrap.innerHTML = `<p style="font-size:12.5px; color:var(--admin-ink-muted);">No proposals issued yet for this request.</p>`;
+      }
+
+      // Internal remarks timeline
+      renderRemarks(r.internalRemarks || []);
+
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function renderRemarks(remarks) {
+      const wrap = document.getElementById('remarks-timeline');
+      if (!remarks || remarks.length === 0) {
+        wrap.innerHTML = `<p style="font-size:11.5px; color:var(--admin-ink-muted);">No internal remarks yet.</p>`;
+        return;
+      }
+      wrap.innerHTML = remarks.map(rem => `
+        <div style="background:var(--admin-sand-light); border:1px solid var(--admin-sand); padding:10px; border-radius:6px; font-size:12px;">
+          <div style="color:var(--admin-ink);">${rem.text || rem.note}</div>
+          <div style="font-size:10px; color:var(--admin-ink-muted); margin-top:4px;">${rem.author || 'Architect'} · ${new Date(rem.timestamp || rem.date).toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+
+    // Apply Status Update
+    document.getElementById('apply-status-btn').addEventListener('click', async () => {
+      const newStatus = document.getElementById('update-status-select').value;
+      const note = document.getElementById('update-status-note').value.trim();
+      const btn = document.getElementById('apply-status-btn');
+      btn.disabled = true;
+
+      await adminApi.updateRequestStatus(requestId, newStatus, note);
+      btn.disabled = false;
+      document.getElementById('update-status-note').value = '';
+      await loadDetails();
+      alert(`Request status updated to "${newStatus.replace('_', ' ')}"!`);
+    });
+
+    // Add Internal Remark
+    document.getElementById('add-remark-btn').addEventListener('click', async () => {
+      const input = document.getElementById('internal-remark-input');
+      const text = input.value.trim();
+      if (!text) return;
+      await adminApi.addInternalRemark(requestId, text);
+      input.value = '';
+      await loadDetails();
+    });
+
+    initPage();
+  </script>
+</body>
+</html>

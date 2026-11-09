@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Announcements & Banners — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 style="font-family:var(--font-serif); font-size:32px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+              Portal Announcements
+            </h1>
+            <p style="font-size:13.5px; color:var(--admin-ink-muted); margin-top:4px;">
+              Publish broadcast notices to the Student Portal, Client Portal, or globally across both.
+            </p>
+          </div>
+          <button id="new-ann-btn" class="admin-btn" style="width:auto;">
+            <i data-lucide="plus"></i>
+            <span>Create Announcement</span>
+          </button>
+        </div>
+
+        <div id="announcements-container" style="display:flex; flex-direction:column; gap:16px;"></div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    let allAnnouncements = [];
+
+    async function initPage() {
+      await initAdminShell('announcements', 'Announcements');
+      await loadData();
+    }
+
+    async function loadData() {
+      const res = await adminApi.getAnnouncements();
+      if (!res.ok) return;
+      allAnnouncements = res.data;
+      renderList(allAnnouncements);
+    }
+
+    function renderList(list) {
+      const container = document.getElementById('announcements-container');
+      if (list.length === 0) {
+        container.innerHTML = `<div style="text-align:center; padding:40px; background:var(--admin-white); border:1px solid var(--admin-border); border-radius:10px; color:var(--admin-ink-muted);">No active announcements. Click "+ Create Announcement".</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(a => `
+        <div style="background:var(--admin-white); border:1px solid var(--admin-border); border-left:4px solid var(--admin-copper); border-radius:8px; padding:18px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+              <strong style="font-size:15px; color:var(--admin-ink);">${a.title}</strong>
+              <span class="tag-status status-sent" style="font-size:10px;">Portal: ${a.targetPortal}</span>
+              <span class="tag-status ${a.active ? 'status-completed' : 'status-rejected'}" style="font-size:10px;">${a.active ? 'Active' : 'Disabled'}</span>
+            </div>
+            <p style="font-size:13px; color:var(--admin-ink-muted);">${a.content}</p>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="toggle-btn admin-btn" data-id="${a.id}" style="padding:4px 10px; font-size:11px; width:auto; background:var(--admin-sand); color:var(--admin-ink); border-color:var(--admin-border); box-shadow:none;">
+              ${a.active ? 'Disable' : 'Enable'}
+            </button>
+            <button class="del-btn admin-btn" data-id="${a.id}" style="padding:4px 10px; font-size:11px; width:auto; background:#FFEBEE; color:#C62828; border-color:#FFCDD2; box-shadow:none;">
+              Delete
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      container.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const item = allAnnouncements.find(x => x.id === btn.dataset.id);
+          if (item) {
+            await adminApi.updateAnnouncement(item.id, { active: !item.active });
+            await loadData();
+          }
+        });
+      });
+
+      container.querySelectorAll('.del-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (confirm('Delete announcement?')) {
+            await adminApi.deleteAnnouncement(btn.dataset.id);
+            await loadData();
+          }
+        });
+      });
+    }
+
+    document.getElementById('new-ann-btn').addEventListener('click', async () => {
+      const title = prompt('Announcement Title:');
+      if (!title) return;
+      const content = prompt('Announcement Message:');
+      if (!content) return;
+      const target = prompt('Target Portal ("student", "client", or "both"):', 'both');
+
+      await adminApi.createAnnouncement({
+        title,
+        content,
+        targetPortal: target || 'both',
+        active: true
+      });
+      await loadData();
+    });
+
+    initPage();
+  </script>
+</body>
+</html>

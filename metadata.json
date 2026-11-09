@@ -1,0 +1,8 @@
+{
+  "name": "Remix Remix Remix Remix SGA.IN Client Portal",
+  "description": "Architectural client portal for SGA.IN (by NXT Services) - submit and track design requests, view plans and collaborate.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

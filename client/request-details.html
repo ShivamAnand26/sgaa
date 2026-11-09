@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Details & Timeline — Shilp Griha Associate (SGA)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/portal.css">
+</head>
+<body class="portal-layout">
+
+  <!-- Left Sidebar -->
+  <aside class="portal-sidebar" id="portal-sidebar" aria-label="Portal Navigation">
+    <div class="sidebar-brand">
+      <a href="../index.html" class="brand-link" style="display:flex; flex-direction:column; gap:4px; text-decoration:none;">
+        <img src="/assets/logo-full.png" alt="Shilp Griha Associate" style="height:36px; width:auto; max-width:160px; object-fit:contain; display:block;">
+        <span style="display:block; font-size:9.5px; color:var(--copper); font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding-left:2px;">Client Portal</span>
+      </a>
+      <button type="button" class="sidebar-close" id="sidebar-close" aria-label="Close menu">&times;</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/>
+          <rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="new-request.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        <span>Submit Request</span>
+      </a>
+
+      <a href="my-requests.html" class="nav-item is-active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <span>My Requests</span>
+      </a>
+
+      <a href="notifications.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span>Notifications</span>
+        <span class="nav-badge" id="nav-notif-badge" style="display:none;">0</span>
+      </a>
+
+      <a href="profile.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>My Profile</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-mini-card">
+        <div class="user-avatar-circle" id="sidebar-avatar">C</div>
+        <div class="user-mini-info">
+          <span class="user-mini-name" id="user-display-name">Client</span>
+          <span class="user-mini-email" id="user-display-email">client@sga.in</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Wrap -->
+  <div class="portal-main">
+    <header class="portal-header">
+      <div class="header-left">
+        <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <a href="my-requests.html" class="text-link" style="font-size:12px;">&larr; All Requests</a>
+          <span style="color:var(--sand);">&bull;</span>
+          <h1 class="page-title" style="font-size:22px;">Request Details</h1>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <a href="notifications.html" class="notif-bell-btn" aria-label="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="notif-badge" id="header-notif-badge" style="display:none;">0</span>
+        </a>
+        <a href="profile.html" class="header-user-btn" aria-label="Profile settings">
+          <div class="header-user-avatar" id="header-avatar">C</div>
+          <span class="header-user-name">Account</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="portal-content page-fade-in">
+      <!-- Request Details Header -->
+      <section class="details-header">
+        <div class="details-title-wrap">
+          <div class="details-id-badge">
+            <span id="details-id" style="font-size:14px; font-weight:700; font-family:monospace; color:var(--copper); letter-spacing:0.06em;">SGA-2026-0001</span>
+            <span id="details-status-badge" class="status-badge status-badge--submitted">Submitted</span>
+          </div>
+          <h2 id="details-title" style="margin:4px 0 2px;">Loading request...</h2>
+          <span id="details-meta" style="font-size:13px; color:var(--muted);">—</span>
+        </div>
+
+        <div style="display:flex; gap:12px; align-items:center;">
+          <button type="button" id="cancel-request-btn" class="btn btn-danger btn-sm" style="display:none;">
+            Cancel Request
+          </button>
+        </div>
+      </section>
+
+      <!-- Details Grid: Timeline (Right/Sidebar) & Main Content (Left) -->
+      <div class="details-grid">
+        <!-- Main Info, Files, and Messages -->
+        <div style="display:flex; flex-direction:column; gap:28px;">
+          <!-- Project Information Card -->
+          <section class="card">
+            <div class="card-section-header">
+              <h3>Project Information</h3>
+            </div>
+            <div class="review-grid">
+              <div class="review-item"><strong>Project Type</strong><span id="info-type">—</span></div>
+              <div class="review-item"><strong>Site Location</strong><span id="info-location">—</span></div>
+              <div class="review-item"><strong>Plot Area</strong><span id="info-plot">—</span></div>
+              <div class="review-item"><strong>Floors</strong><span id="info-floors">—</span></div>
+              <div class="review-item"><strong>Budget Estimate</strong><span id="info-budget">—</span></div>
+              <div class="review-item" style="grid-column:1/-1;"><strong>Description & Scope</strong><span id="info-desc" style="white-space:pre-wrap; line-height:1.6;">—</span></div>
+            </div>
+          </section>
+
+          <!-- Studio Architectural Proposals & Milestones Card -->
+          <section class="card" id="proposals-section">
+            <div class="card-section-header" style="display:flex; justify-content:space-between; align-items:center;">
+              <h3>Architectural Proposals & Fee Quotes</h3>
+              <span id="proposal-count-badge" class="badge-draft" style="display:none;">0 Proposals</span>
+            </div>
+            <div id="client-proposals-container" style="display:flex; flex-direction:column; gap:16px;">
+              <p style="font-size:13px; color:var(--muted);">Checking for studio fee proposals...</p>
+            </div>
+          </section>
+
+          <!-- Uploaded Files Card -->
+          <section class="card">
+            <div class="card-section-header">
+              <h3>Uploaded Documents & Plans</h3>
+            </div>
+            <div id="details-files-container" class="uploaded-files-list"></div>
+
+            <!-- Extra File Upload (while status is submitted or under_review) -->
+            <div id="extra-upload-section" style="margin-top:20px; padding-top:16px; border-top:1px dashed var(--sand); display:none;">
+              <label for="extra-file-input" class="form-label">Attach Additional Files (PDF, JPG, PNG)</label>
+              <input type="file" id="extra-file-input" multiple accept=".pdf,.jpg,.jpeg,.png" class="form-input" style="padding-top:10px;">
+              <span class="form-hint">Permitted while your project remains in initial review. Max 8 total files.</span>
+            </div>
+          </section>
+
+          <!-- Updates & Messages from SGA.IN Studio -->
+          <section class="card">
+            <div class="card-section-header">
+              <h3>Studio Communications & Direct Updates</h3>
+            </div>
+            <div id="messages-thread" class="message-thread" style="max-height:400px; overflow-y:auto;"></div>
+
+            <form id="message-form" style="display:flex; gap:12px; margin-top:16px;">
+              <input type="text" id="message-text" class="form-input" placeholder="Type a message or query to the architect..." required style="flex:1;">
+              <button type="submit" class="btn btn-primary btn-sm">Send &rarr;</button>
+            </form>
+          </section>
+        </div>
+
+        <!-- Vertical Status Timeline (Right Column) -->
+        <div>
+          <section class="card" style="position:sticky; top:96px;">
+            <div class="card-section-header">
+              <h3>Architectural Progress</h3>
+            </div>
+            <p style="font-size:12px; color:var(--muted); margin-bottom:20px;">Track milestone progress from review to completed construction drawings.</p>
+            <div id="timeline-container" class="timeline"></div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { initRequestDetails } from './js/requests.js';
+    initRequestDetails();
+  </script>
+</body>
+</html>

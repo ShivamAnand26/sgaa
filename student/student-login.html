@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Sign In — SGA.IN Study Notes Platform</title>
+  <meta name="description" content="Sign in to the SGA.IN Student Portal to browse, preview, and read architectural study notes, exam guides and studio sheets.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M7 30 32 8l25 22M16 36l31-9' fill='none' stroke='%23C47A3B' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="../client/css/tokens.css">
+  <link rel="stylesheet" href="../client/css/base.css">
+  <link rel="stylesheet" href="../client/css/components.css">
+  <link rel="stylesheet" href="../client/css/auth.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body class="auth-page">
+
+  <!-- Left (45%) Ivory Architectural 3D Panel -->
+  <aside class="auth-panel-left" aria-label="SGA.IN Architectural Study Library">
+    <div class="auth-branding">
+      <a href="../index.html" class="brand-link" aria-label="Return to SGA home" style="text-decoration:none; display:inline-block;">
+        <img src="/assets/logo-full.png" alt="Shilp Griha Associate" style="height:40px; width:auto; max-width:180px; object-fit:contain; display:block;">
+      </a>
+      <p style="margin-top:6px; font-size:12px; color:var(--muted); letter-spacing:0.04em;">Student Study Notes & Learning</p>
+    </div>
+
+    <!-- 3D Three.js Procedural Books Scene -->
+    <div class="auth-scene-container" id="auth-scene-container">
+      <canvas id="auth-canvas" aria-label="3D procedural architectural study books"></canvas>
+      <div id="auth-fallback-visual" class="auth-fallback-visual">
+        <svg viewBox="0 0 200 160" fill="none" stroke="#C47A3B" stroke-width="1.8" style="width:100%">
+          <rect x="30" y="30" width="140" height="90" rx="4" fill="#FAF8F5" />
+          <line x1="30" y1="50" x2="170" y2="50" />
+          <line x1="45" y1="70" x2="155" y2="70" stroke="#D9B77E" />
+          <line x1="45" y1="85" x2="135" y2="85" stroke="#D9B77E" />
+        </svg>
+      </div>
+    </div>
+
+    <div class="auth-copy-bottom">
+      <p class="section-label">Academic Resources</p>
+      <h2 class="auth-copy-quote">Learn architecture with notes made for <em>exams & studios.</em></h2>
+      <p class="auth-copy-sub">Verified construction details, structural calculation guides, and theory summaries curated by experienced architectural faculty.</p>
+    </div>
+  </aside>
+
+  <!-- Right (55%) White Form Panel -->
+  <main class="auth-panel-right">
+    <div class="auth-top-nav" style="display:flex; justify-content:space-between; align-items:center;">
+      <a href="../index.html" class="auth-mobile-logo" aria-label="SGA home" style="text-decoration:none;">
+        <img src="/assets/logo-full.png" alt="Shilp Griha Associate" style="height:32px; width:auto; max-width:140px; object-fit:contain; display:block;">
+      </a>
+      <a href="../index.html" class="text-link" style="font-size:12px;">&larr; Back to Website</a>
+    </div>
+
+    <div class="auth-form-wrapper">
+      <div class="auth-header">
+        <span class="section-label">Student Access</span>
+        <h1 class="auth-title">Welcome back.</h1>
+        <p class="auth-subtitle">Sign in to your student library to access your study notes and downloads.</p>
+      </div>
+
+      <div id="login-alert" class="auth-alert" role="alert" aria-live="polite"></div>
+      <div id="waiting-note-banner" class="waiting-note-banner" style="display:none; margin-bottom:18px; padding:12px 16px; background:#FAF6EE; border:1px solid rgba(196,122,59,0.35); border-radius:8px; font-size:12.5px; color:var(--ink); line-height:1.5;"></div>
+
+      <form id="student-login-form" novalidate>
+        <div class="form-group">
+          <label for="login-email" class="form-label">Student Email <span class="required">*</span></label>
+          <input
+            type="email"
+            id="login-email"
+            class="form-input"
+            placeholder="student@university.edu"
+            required
+            autocomplete="email"
+          >
+        </div>
+
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label for="login-password" class="form-label">Password <span class="required">*</span></label>
+            <a href="student-forgot-password.html" class="text-link" style="font-size:11px;">Forgot password?</a>
+          </div>
+          <div class="input-with-action">
+            <input
+              type="password"
+              id="login-password"
+              class="form-input"
+              placeholder="Enter your password"
+              required
+              autocomplete="current-password"
+            >
+            <button type="button" class="input-action-btn" id="toggle-password-btn" aria-label="Show password">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+          <label class="custom-checkbox">
+            <input type="checkbox" id="remember-me">
+            <span class="checkbox-box"></span>
+            <span>Remember me for 30 days</span>
+          </label>
+        </div>
+
+        <button type="submit" id="login-submit-btn" class="btn btn-primary" style="width:100%">
+          Sign In to Student Portal
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        <p>New to SGA.IN? <a href="student-register.html">Create a student account &rarr;</a></p>
+        <p style="margin-top:10px; font-size:12px;">Are you an architectural design client? <a href="../client/login.html" style="color:var(--ink); text-decoration:underline;">Client Portal Login</a></p>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { initStudentLogin } from './js/student-auth.js';
+    import { initStudentAuthScene } from './js/student-auth-scene.js';
+
+    initStudentLogin();
+    initStudentAuthScene();
+  </script>
+</body>
+</html>

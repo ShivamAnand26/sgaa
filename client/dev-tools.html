@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Developer & QA Testing Tools — Shilp Griha Associate (SGA)</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <!-- jsPDF CDN for generating valid multi-page PDFs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body { background-color: var(--ivory); padding: 40px 20px; font-family: var(--font-sans); }
+    .dev-container { max-width: 960px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; }
+    .dev-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--sand); padding-bottom: 20px; flex-wrap: wrap; gap: 16px; }
+    .badge-demo { background: var(--copper); color: white; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    pre { background: #1C1917; color: #dedede; padding: 16px; border-radius: 8px; font-size: 12px; overflow-x: auto; max-height: 250px; }
+    .note-table td, .note-table th { padding: 10px 12px; border-bottom: 1px solid var(--sand); font-size: 12.5px; }
+  </style>
+</head>
+<body>
+
+  <div class="dev-container">
+    <header class="dev-header">
+      <div>
+        <span class="badge-demo">INTERNAL QA & DEMO TESTING ONLY</span>
+        <h1 style="font-size:32px; margin-top:8px;">SGA Unified Dev Tools</h1>
+        <p style="font-size:13px; margin-top:2px;">Test Client Portal and Student Portal workflows without external servers.</p>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a href="../admin/admin-login.html" class="btn btn-primary btn-sm" style="background:#1C1917; color:#D9B77E; border:1px solid #D9B77E; font-weight:600;">Studio Admin Console &rarr;</a>
+        <a href="login.html" class="btn btn-secondary btn-sm">Client Login</a>
+        <a href="dashboard.html" class="btn btn-secondary btn-sm">Client Dashboard</a>
+        <a href="../student/student-login.html" class="btn btn-secondary btn-sm">Student Login</a>
+        <a href="../student/browse-notes.html" class="btn btn-secondary btn-sm">Browse Notes</a>
+      </div>
+    </header>
+
+    <!-- Section 1: Seed Demo Data -->
+    <section class="card">
+      <div class="card-section-header">
+        <h3>1. Seed / Reset Demo Workspace</h3>
+      </div>
+      <p style="font-size:13px; margin-bottom:16px;">
+        Populate localStorage and IndexedDB with realistic client and student accounts, architectural requests, and 8 comprehensive study notes.
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+        <div style="background:var(--sand-light); border:1px solid var(--sand); border-radius:8px; padding:14px; font-size:12.5px;">
+          <strong style="color:var(--ink);">Demo Client Account:</strong><br>
+          Email: <code style="color:var(--copper); font-weight:600;">client@sga.in</code><br>
+          Password: <code style="color:var(--copper); font-weight:600;">Client123!</code><br>
+          Role: <code>client</code>
+        </div>
+        <div style="background:var(--sand-light); border:1px solid var(--sand); border-radius:8px; padding:14px; font-size:12.5px;">
+          <strong style="color:var(--ink);">Demo Student Account:</strong><br>
+          Email: <code style="color:var(--copper); font-weight:600;">student@sga.in</code><br>
+          Password: <code style="color:var(--copper); font-weight:600;">Student123!</code><br>
+          Role: <code>student</code> (B.Arch, 4th Year)
+        </div>
+      </div>
+
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <button type="button" id="clear-all-btn" class="btn btn-danger btn-sm">
+          Clear All Browser & Server Data (Reset DB)
+        </button>
+        <button type="button" id="clear-student-btn" class="btn btn-secondary btn-sm">
+          Reset Student Library & Cart Only
+        </button>
+      </div>
+    </section>
+
+    <!-- Section 2: Study Notes Catalog Management (Migrated) -->
+    <section class="card" style="border-left: 4px solid var(--copper);">
+      <div class="card-section-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <div>
+          <span style="font-size:11px; font-weight:700; color:var(--copper); text-transform:uppercase; letter-spacing:0.1em;">Production Catalog System</span>
+          <h3 style="margin-top:2px;">2. Study Notes Studio Manager</h3>
+        </div>
+        <a href="../admin/admin-notes.html" class="btn btn-primary btn-sm" style="background:#1C1917; color:#D9B77E; border:1px solid #D9B77E;">
+          Open Admin Notes Studio &rarr;
+        </a>
+      </div>
+      <p style="font-size:13.5px; color:var(--muted); line-height:1.6; margin-top:8px;">
+        The temporary in-page notes manager has been upgraded to the full-featured <strong>Studio Admin Study Notes Portal</strong>. In the Admin console you can upload multi-page PDFs, auto-extract page counts with PDF.js, generate cover previews on canvas, manage revisions & versions, and publish notes directly to students.
+      </p>
+      <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+        <a href="../admin/admin-notes.html" class="btn btn-secondary btn-sm">Manage Study Notes & Pricing &rarr;</a>
+        <a href="../admin/admin-overview.html" class="btn btn-secondary btn-sm">Admin Studio Overview &rarr;</a>
+      </div>
+    </section>
+
+    <!-- Section 3: Client Timeline & Status Simulator -->
+    <section class="card">
+      <div class="card-section-header">
+        <h3>3. Client Timeline & Status Simulator</h3>
+      </div>
+      <p style="font-size:13px; margin-bottom:16px;">
+        Simulate studio architect decisions on any client request to verify the client-facing timeline and live notifications.
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+        <div class="form-group">
+          <label for="sim-request-select" class="form-label">Select Request</label>
+          <select id="sim-request-select" class="form-select">
+            <option value="">-- No requests available (seed demo first) --</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="sim-status-select" class="form-label">New Status</label>
+          <select id="sim-status-select" class="form-select">
+            <option value="submitted">Submitted</option>
+            <option value="under_review">Under Review</option>
+            <option value="approved">Approved</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="sim-client-note" class="form-label">Client-Visible Timeline Note</label>
+        <input type="text" id="sim-client-note" class="form-input" placeholder="e.g. Plot boundary surveyed and 2D floor plan draft approved.">
+      </div>
+
+      <div class="form-group">
+        <label for="sim-internal-remark" class="form-label">Private Internal Remark (Studio Only)</label>
+        <input type="text" id="sim-internal-remark" class="form-input" placeholder="e.g. Soil load capacity verified at 180 kN/m2. Ready for structural engineer review.">
+      </div>
+
+      <button type="button" id="sim-apply-btn" class="btn btn-primary btn-sm">
+        Update Request Status & Notify Client
+      </button>
+    </section>
+
+    <!-- Section 4: Live Data Inspector -->
+    <section class="card">
+      <div class="card-section-header">
+        <h3>4. Storage Inspector (localStorage & IndexedDB)</h3>
+      </div>
+      <p style="font-size:13px; margin-bottom:12px;">Examine raw records in the simulated browser database:</p>
+
+      <div style="display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-secondary btn-sm" id="inspect-users-btn">Users</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="inspect-notes-btn">Notes</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="inspect-purchases-btn">Purchases</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="inspect-orders-btn">Orders</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="inspect-payments-btn">Payments</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="inspect-requests-btn">Requests</button>
+        <button type="button" class="btn btn-secondary btn-sm" id="inspect-notifs-btn">Notifications</button>
+      </div>
+
+      <pre id="json-viewer">// Click an inspect button above to view data.</pre>
+    </section>
+  </div>
+
+  <script type="module">
+    import { db } from './js/db.js';
+    import { cryptoService } from './js/crypto.js';
+    import { ui } from './js/ui.js';
+    import { api } from './js/api.js';
+
+    const reqSelect = document.getElementById('sim-request-select');
+    const statusSelect = document.getElementById('sim-status-select');
+    const noteInput = document.getElementById('sim-client-note');
+    const remarkInput = document.getElementById('sim-internal-remark');
+    const applyBtn = document.getElementById('sim-apply-btn');
+    const jsonView = document.getElementById('json-viewer');
+    const notesTableBody = document.getElementById('notes-table-body');
+    const noteFormCard = document.getElementById('note-form-card');
+    const toggleAddNoteBtn = document.getElementById('toggle-add-note-btn');
+    const cancelNoteBtn = document.getElementById('cancel-note-btn');
+    const noteEditorForm = document.getElementById('note-editor-form');
+
+    // Clean database: zero demo notes
+    const SAMPLE_NOTES = [];
+
+    /**
+     * Generate a multi-page PDF Blob using client-side jsPDF
+     */
+    function createSamplePdf(note) {
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        return new Blob(['%PDF-1.4 sample pdf content for ' + note.title], { type: 'application/pdf' });
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+      const pagesCount = note.pages || 10;
+
+      for (let p = 1; p <= pagesCount; p++) {
+        if (p > 1) doc.addPage();
+
+        // Architectural Header Banner
+        doc.setFillColor(28, 25, 23);
+        doc.rect(0, 0, 210, 26, 'F');
+
+        doc.setTextColor(250, 248, 245);
+        doc.setFont('times', 'bold');
+        doc.setFontSize(16);
+        doc.text('SGA', 16, 14);
+
+        doc.setFont('times', 'italic');
+        doc.setFontSize(9);
+        doc.setTextColor(196, 122, 59);
+        doc.text('Architectural Planning, Design & Study Notes', 16, 20);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(210, 210, 210);
+        doc.text(`Subject: ${note.subject}`, 140, 14);
+        doc.text(`Doc ID: ${note.id}`, 140, 20);
+
+        // Page Number
+        doc.setTextColor(100, 100, 100);
+        doc.setFontSize(8);
+        doc.text(`Page ${p} of ${pagesCount}`, 175, 290);
+        doc.text('SGA Verified Student Edition — Protected Learning Material', 16, 290);
+
+        // Page Content
+        if (p === 1) {
+          // Cover Page
+          doc.setTextColor(28, 25, 23);
+          doc.setFont('times', 'bold');
+          doc.setFontSize(22);
+          doc.text(note.title, 16, 50, { maxWidth: 175 });
+
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(11);
+          doc.setTextColor(196, 122, 59);
+          doc.text(`Author: ${note.author || 'SGA Faculty'}`, 16, 75);
+
+          doc.setDrawColor(210, 200, 190);
+          doc.line(16, 82, 194, 82);
+
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(10);
+          doc.setTextColor(60, 60, 60);
+          doc.text(note.description || '', 16, 92, { maxWidth: 175, lineHeightFactor: 1.5 });
+
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(12);
+          doc.setTextColor(28, 25, 23);
+          doc.text('Table of Contents', 16, 130);
+
+          let tocY = 140;
+          (note.tableOfContents || []).forEach(item => {
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.setTextColor(50, 50, 50);
+            doc.text(item, 20, tocY);
+            doc.setDrawColor(230, 225, 220);
+            doc.line(20, tocY + 2, 190, tocY + 2);
+            tocY += 12;
+          });
+        } else {
+          // Chapter content pages
+          const chapterIdx = (p - 2) % (note.tableOfContents?.length || 1);
+          const chapterTitle = note.tableOfContents ? note.tableOfContents[chapterIdx] : `Topic Section ${p}`;
+
+          doc.setTextColor(28, 25, 23);
+          doc.setFont('times', 'bold');
+          doc.setFontSize(16);
+          doc.text(chapterTitle, 16, 42);
+
+          doc.setDrawColor(196, 122, 59);
+          doc.setLineWidth(0.6);
+          doc.line(16, 46, 194, 46);
+
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9.5);
+          doc.setTextColor(50, 50, 50);
+
+          const sampleText = `This section details the critical analytical procedures, formulas, and drafting criteria applicable to ${note.subject}. When developing structural or spatial schematics, architects must systematically calculate loading vectors, wind shear coefficients, and dimensional tolerances in compliance with national and regional building codes.\n\nKey Considerations:\n• Standard drafting conventions and tolerance allowances\n• Stress distribution diagrams and deflection parameters\n• Coordination between architectural finishes and structural cores\n• Sustainable life-cycle costs and thermal efficiency ratings`;
+
+          doc.text(sampleText, 16, 56, { maxWidth: 175, lineHeightFactor: 1.5 });
+
+          // Schematic drawing box
+          doc.setFillColor(248, 245, 240);
+          doc.rect(16, 110, 178, 80, 'F');
+          doc.setDrawColor(200, 190, 180);
+          doc.rect(16, 110, 178, 80, 'S');
+
+          doc.setFont('helvetica', 'bold');
+          doc.setFontSize(9);
+          doc.setTextColor(120, 110, 100);
+          doc.text(`[ FIGURE ${p}.1: SCHEMATIC BLUEPRINT & SECTION DETAIL ]`, 22, 120);
+
+          // Draw blueprint grid lines
+          doc.setDrawColor(220, 215, 210);
+          for (let gx = 26; gx <= 180; gx += 20) doc.line(gx, 126, gx, 180);
+          for (let gy = 126; gy <= 180; gy += 15) doc.line(26, gy, 180, gy);
+
+          // Text summary below figure
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(80, 80, 80);
+          doc.text(`Formulas & Calculations:\nσ = M · y / I   |   Design Factor = 1.5   |   Deflection Limit = L / 350`, 16, 204, { lineHeightFactor: 1.4 });
+        }
+      }
+
+      return doc.output('blob');
+    }
+
+    /**
+     * Refresh requests in simulator select
+     */
+    function refreshSelect() {
+      const requests = db.get(db.KEYS.REQUESTS);
+      reqSelect.innerHTML = '';
+      if (!requests.length) {
+        reqSelect.innerHTML = '<option value="">-- No requests available (seed demo first) --</option>';
+        return;
+      }
+      requests.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r.id;
+        opt.textContent = `${r.id} - ${r.title} (${r.status.toUpperCase()})`;
+        reqSelect.appendChild(opt);
+      });
+    }
+
+    /**
+     * Refresh Notes Table in Manager
+     */
+    function refreshNotesTable() {
+      const notes = db.get(db.KEYS.NOTES);
+      notesTableBody.innerHTML = '';
+
+      if (!notes.length) {
+        notesTableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--muted); padding:20px;">No notes created yet. Click "Generate 8 Sample Architectural Notes" above.</td></tr>';
+        return;
+      }
+
+      notes.forEach(note => {
+        const tr = document.createElement('tr');
+        const pubBadge = note.published !== false
+          ? '<span style="background:#E8F3ED; color:#2F6B4F; padding:2px 8px; border-radius:100px; font-size:10.5px; font-weight:700;">Published</span>'
+          : '<span style="background:#F3F4F6; color:#6B7280; padding:2px 8px; border-radius:100px; font-size:10.5px; font-weight:700;">Draft</span>';
+
+        tr.innerHTML = `
+          <td><strong>${note.title}</strong><div style="font-size:11px; color:var(--muted); font-family:monospace;">${note.id}</div></td>
+          <td>${note.subject}</td>
+          <td>${note.pages || 0}</td>
+          <td><strong>₹${note.price}</strong></td>
+          <td>${pubBadge}</td>
+          <td>
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn btn-secondary btn-sm edit-note-btn" data-id="${note.id}" style="height:28px; font-size:11px; padding:0 8px;">Edit</button>
+              <button type="button" class="btn btn-secondary btn-sm toggle-pub-btn" data-id="${note.id}" style="height:28px; font-size:11px; padding:0 8px;">${note.published !== false ? 'Unpublish' : 'Publish'}</button>
+              <button type="button" class="file-remove-btn delete-note-btn" data-id="${note.id}" style="width:26px; height:26px; font-size:16px;">&times;</button>
+            </div>
+          </td>
+        `;
+
+        tr.querySelector('.edit-note-btn')?.addEventListener('click', () => editNote(note.id));
+        tr.querySelector('.toggle-pub-btn')?.addEventListener('click', async () => {
+          note.published = note.published === false;
+          const all = db.get(db.KEYS.NOTES);
+          const idx = all.findIndex(n => n.id === note.id);
+          if (idx !== -1) {
+            all[idx].published = note.published;
+            db.set(db.KEYS.NOTES, all);
+          }
+          ui.showToast(`Note "${note.title}" ${note.published ? 'published' : 'set to draft'}.`, 'info');
+          refreshNotesTable();
+        });
+        tr.querySelector('.delete-note-btn')?.addEventListener('click', async () => {
+          if (confirm(`Delete note "${note.title}"?`)) {
+            await api.deleteNote(note.id);
+            ui.showToast('Note deleted.', 'info');
+            refreshNotesTable();
+          }
+        });
+
+        notesTableBody.appendChild(tr);
+      });
+    }
+
+    function editNote(id) {
+      const note = db.get(db.KEYS.NOTES).find(n => n.id === id);
+      if (!note) return;
+
+      document.getElementById('edit-note-id').value = note.id;
+      document.getElementById('form-note-title').value = note.title;
+      document.getElementById('form-note-subject').value = note.subject;
+      document.getElementById('form-note-category').value = note.category || 'General';
+      document.getElementById('form-note-price').value = note.price;
+      document.getElementById('form-note-pages').value = note.pages;
+      document.getElementById('form-note-author').value = note.author || 'SGA Faculty';
+      document.getElementById('form-note-published').value = note.published !== false ? 'true' : 'false';
+      document.getElementById('form-note-desc').value = note.description || '';
+      document.getElementById('form-note-toc').value = (note.tableOfContents || []).join('\n');
+      document.getElementById('note-form-title').textContent = `Edit Note: ${note.title}`;
+
+      noteFormCard.style.display = 'block';
+      noteFormCard.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    toggleAddNoteBtn.addEventListener('click', () => {
+      noteEditorForm.reset();
+      document.getElementById('edit-note-id').value = '';
+      document.getElementById('note-form-title').textContent = 'Add New Architectural Study Note';
+      noteFormCard.style.display = noteFormCard.style.display === 'none' ? 'block' : 'none';
+    });
+
+    cancelNoteBtn.addEventListener('click', () => {
+      noteFormCard.style.display = 'none';
+      noteEditorForm.reset();
+    });
+
+    noteEditorForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const editId = document.getElementById('edit-note-id').value;
+      const title = document.getElementById('form-note-title').value.trim();
+      const subject = document.getElementById('form-note-subject').value.trim();
+      const category = document.getElementById('form-note-category').value.trim();
+      const price = parseFloat(document.getElementById('form-note-price').value) || 0;
+      const pages = parseInt(document.getElementById('form-note-pages').value, 10) || 1;
+      const author = document.getElementById('form-note-author').value.trim();
+      const published = document.getElementById('form-note-published').value === 'true';
+      const description = document.getElementById('form-note-desc').value.trim();
+      const toc = document.getElementById('form-note-toc').value.split('\n').map(s => s.trim()).filter(Boolean);
+      const pdfFile = document.getElementById('form-note-pdf').files?.[0];
+
+      let fileBlob = null;
+      if (pdfFile) {
+        // Verify %PDF- magic bytes
+        const headerSlice = await pdfFile.slice(0, 5).text();
+        if (!headerSlice.startsWith('%PDF-')) {
+          ui.showToast('Invalid file: uploaded file is not a valid PDF (%PDF- header missing).', 'error');
+          return;
+        }
+        fileBlob = pdfFile;
+      }
+
+      const noteData = {
+        title,
+        subject,
+        category,
+        price,
+        pages,
+        author,
+        published,
+        description,
+        tableOfContents: toc,
+        includedItems: ['Vector architectural details', 'Exam summary sheet', 'Watermarked PDF']
+      };
+
+      if (!fileBlob && !editId) {
+        // Generate multi-page PDF automatically
+        fileBlob = createSamplePdf(noteData);
+      }
+
+      if (editId) {
+        const updateRes = await api.updateNote(editId, noteData, fileBlob);
+        if (updateRes.ok) {
+          ui.showToast('Note updated successfully!', 'success');
+        } else {
+          ui.showToast(updateRes.error || 'Failed to update note', 'error');
+        }
+      } else {
+        const createRes = await api.createNote(noteData, fileBlob);
+        if (createRes.ok) {
+          ui.showToast('New note created successfully!', 'success');
+        } else {
+          ui.showToast(createRes.error || 'Failed to create note', 'error');
+        }
+      }
+
+      noteFormCard.style.display = 'none';
+      noteEditorForm.reset();
+      refreshNotesTable();
+    });
+
+    /**
+     * Sample notes generator disabled in production clean mode
+     */
+     async function generateSampleNotes() {
+       ui.showToast('Demo notes are disabled. Please upload real study notes in the Admin Notes Studio.', 'info');
+     }
+
+     document.getElementById('seed-notes-btn')?.addEventListener('click', generateSampleNotes);
+
+    /**
+     * Clear student data only
+     */
+    document.getElementById('clear-student-btn')?.addEventListener('click', () => {
+      if (confirm('Reset student purchases, wishlist, and cart?')) {
+        db.set(db.KEYS.PURCHASES, []);
+        db.set(db.KEYS.ORDERS, []);
+        db.set(db.KEYS.PAYMENTS, []);
+        db.set(db.KEYS.CART, []);
+        db.set(db.KEYS.WISHLIST, []);
+        ui.showToast('Student library, cart, and payments reset.', 'info');
+      }
+    });
+
+    
+
+    // Clear All
+    document.getElementById('clear-all-btn')?.addEventListener('click', async () => {
+      if (confirm('Clear all local browser database records and server database?')) {
+        localStorage.clear();
+        sessionStorage.clear();
+        try {
+          await fetch('/api/notes/clear', { method: 'POST' });
+        } catch (e) {
+          console.warn('Server clear error:', e);
+        }
+        await db.clearAllBlobs();
+        db.init();
+        refreshSelect();
+        refreshNotesTable();
+        jsonView.textContent = '// Database cleared.';
+        ui.showToast('All browser and server storage cleared.', 'info');
+      }
+    });
+
+    // Simulator Update
+    applyBtn.addEventListener('click', () => {
+      const id = reqSelect.value;
+      if (!id) {
+        alert('Please select a request first.');
+        return;
+      }
+
+      const requests = db.get(db.KEYS.REQUESTS);
+      const req = requests.find(r => r.id === id);
+      if (!req) return;
+
+      const newStatus = statusSelect.value;
+      const clientNote = noteInput.value.trim() || `Status updated to ${newStatus.replace('_', ' ')}.`;
+      const internalRemark = remarkInput.value.trim();
+
+      req.status = newStatus;
+      req.timeline.push({
+        step: newStatus,
+        label: newStatus.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+        date: new Date().toISOString(),
+        note: clientNote
+      });
+
+      if (internalRemark) {
+        req.internalRemarks = req.internalRemarks || [];
+        req.internalRemarks.push({
+          date: new Date().toISOString(),
+          note: internalRemark
+        });
+      }
+
+      req.updatedAt = new Date().toISOString();
+      db.set(db.KEYS.REQUESTS, requests);
+
+      // Notification
+      const notifs = db.get(db.KEYS.NOTIFICATIONS);
+      notifs.push({
+        id: db.generateId('NOTIF'),
+        userId: req.userId,
+        title: `Status Update: ${req.id} is now ${newStatus.replace('_', ' ')}`,
+        body: clientNote,
+        requestId: req.id,
+        read: false,
+        createdAt: new Date().toISOString()
+      });
+      db.set(db.KEYS.NOTIFICATIONS, notifs);
+
+      refreshSelect();
+      ui.showToast(`Updated ${req.id} status to "${newStatus}"!`, 'success');
+      noteInput.value = '';
+      remarkInput.value = '';
+    });
+
+    // Inspectors
+    document.getElementById('inspect-users-btn').addEventListener('click', () => {
+      jsonView.textContent = JSON.stringify(db.get(db.KEYS.USERS), null, 2);
+    });
+    document.getElementById('inspect-notes-btn').addEventListener('click', () => {
+      jsonView.textContent = JSON.stringify(db.get(db.KEYS.NOTES), null, 2);
+    });
+    document.getElementById('inspect-purchases-btn').addEventListener('click', () => {
+      jsonView.textContent = JSON.stringify(db.get(db.KEYS.PURCHASES), null, 2);
+    });
+    document.getElementById('inspect-orders-btn').addEventListener('click', () => {
+      jsonView.textContent = JSON.stringify(db.get(db.KEYS.ORDERS), null, 2);
+    });
+    document.getElementById('inspect-payments-btn').addEventListener('click', () => {
+      jsonView.textContent = JSON.stringify(db.get(db.KEYS.PAYMENTS), null, 2);
+    });
+    document.getElementById('inspect-requests-btn').addEventListener('click', () => {
+      jsonView.textContent = JSON.stringify(db.get(db.KEYS.REQUESTS), null, 2);
+    });
+    document.getElementById('inspect-notifs-btn').addEventListener('click', () => {
+      jsonView.textContent = JSON.stringify(db.get(db.KEYS.NOTIFICATIONS), null, 2);
+    });
+
+    refreshSelect();
+    refreshNotesTable();
+  </script>
+</body>
+</html>

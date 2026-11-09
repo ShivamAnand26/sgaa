@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposals & Milestones — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- jsPDF CDN for proposal document generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    .proposals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 22px;
+    }
+    .prop-card {
+      background: var(--admin-white);
+      border: 1px solid var(--admin-border);
+      border-radius: 10px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .prop-card:hover {
+      border-color: var(--admin-gold);
+    }
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
+      display: none;
+      backdrop-filter: blur(4px);
+    }
+    .drawer-overlay.is-open { display: block; }
+    .drawer-content {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: min(680px, 100%);
+      background: var(--admin-white);
+      z-index: 101;
+      padding: 32px;
+      overflow-y: auto;
+      box-shadow: -10px 0 40px rgba(0,0,0,0.25);
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .drawer-overlay.is-open .drawer-content { transform: translateX(0); }
+  </style>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 style="font-family:var(--font-serif); font-size:32px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+              Design Proposals & Milestones
+            </h1>
+            <p style="font-size:13.5px; color:var(--admin-ink-muted); margin-top:4px;">
+              Issue formal architectural design fee proposals, itemize scope deliverables, track GST, and manage stage sign-offs.
+            </p>
+          </div>
+          <button id="create-proposal-btn" class="admin-btn" style="width:auto;">
+            <i data-lucide="plus"></i>
+            <span>Create New Proposal</span>
+          </button>
+        </div>
+
+        <!-- Proposals List -->
+        <div class="proposals-grid" id="proposals-container">
+          <div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--admin-ink-muted);">Loading proposals...</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create Proposal Drawer -->
+  <div class="drawer-overlay" id="prop-drawer">
+    <div class="drawer-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--admin-border); padding-bottom:16px;">
+        <h2 style="font-family:var(--font-serif); font-size:24px; font-weight:600;">Draft Architectural Proposal</h2>
+        <button id="close-drawer-btn" style="background:none; border:none; cursor:pointer; color:var(--admin-ink-muted);"><i data-lucide="x"></i></button>
+      </div>
+
+      <form id="prop-form">
+        <div class="admin-form-group">
+          <label>Project Title / Proposal Heading</label>
+          <input type="text" id="prop-title" class="admin-input" placeholder="e.g. Architectural Planning & 3D Visualization Proposal" required style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div class="admin-form-group">
+            <label>Linked Request ID</label>
+            <input type="text" id="prop-req-id" class="admin-input" placeholder="SGA-2026-0001" required style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+          </div>
+          <div class="admin-form-group">
+            <label>Client Email</label>
+            <input type="email" id="prop-client-email" class="admin-input" placeholder="client@sga.in" required style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+          </div>
+        </div>
+
+        <div class="admin-form-group">
+          <label>Scope Summary</label>
+          <textarea id="prop-scope" rows="3" class="admin-input" placeholder="Detailed architectural deliverables including zoning, contour integration, 2D working drawings, and 3D renderings..." style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink); height:auto;"></textarea>
+        </div>
+
+        <!-- Line Items -->
+        <div style="margin-top:20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <label style="font-weight:600; font-size:12px; text-transform:uppercase;">Line Items & Fee Breakdown</label>
+            <button type="button" id="add-item-btn" style="background:none; border:none; color:var(--admin-copper); font-size:12px; font-weight:600; cursor:pointer;">+ Add Line Item</button>
+          </div>
+          <div id="items-container" style="display:flex; flex-direction:column; gap:10px;">
+            <div class="item-row" style="display:grid; grid-template-columns:3fr 1fr 1.5fr; gap:8px;">
+              <input type="text" class="admin-input item-desc" placeholder="Scope Deliverable" value="Concept Design & Spatial Zoning" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+              <input type="number" class="admin-input item-qty" placeholder="Qty" value="1" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+              <input type="number" class="admin-input item-rate" placeholder="Rate (₹)" value="150000" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+            </div>
+            <div class="item-row" style="display:grid; grid-template-columns:3fr 1fr 1.5fr; gap:8px;">
+              <input type="text" class="admin-input item-desc" placeholder="Scope Deliverable" value="2D Detailed Working Drawings" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+              <input type="number" class="admin-input item-qty" placeholder="Qty" value="1" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+              <input type="number" class="admin-input item-rate" placeholder="Rate (₹)" value="200000" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:20px; background:var(--admin-sand-light); padding:16px; border-radius:8px; border:1px solid var(--admin-sand);">
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
+            <span>Subtotal:</span>
+            <strong id="calc-subtotal">₹3,50,000</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
+            <span>GST (18%):</span>
+            <strong id="calc-gst">₹63,000</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:15px; font-weight:700; color:var(--admin-copper); padding-top:8px; border-top:1px solid var(--admin-border);">
+            <span>Grand Total:</span>
+            <span id="calc-total">₹4,13,000</span>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px; margin-top:24px;">
+          <button type="submit" id="save-prop-btn" class="admin-btn">Save Draft Proposal</button>
+          <button type="button" id="cancel-drawer-btn" class="admin-btn" style="background:none; border-color:var(--admin-border); color:var(--admin-ink); box-shadow:none;">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    let proposals = [];
+
+    async function initPage() {
+      await initAdminShell('proposals', 'Proposals & Milestones');
+      
+      // Auto-prefill if redirected from request details
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('requestId')) {
+        openDrawer();
+        document.getElementById('prop-req-id').value = params.get('requestId');
+        document.getElementById('prop-client-email').value = params.get('clientEmail') || '';
+      }
+
+      await loadProposals();
+      bindCalculations();
+    }
+
+    async function loadProposals() {
+      const res = await adminApi.getProposals();
+      if (!res.ok) return;
+      proposals = res.data;
+      renderProposals(proposals);
+    }
+
+    function renderProposals(list) {
+      const container = document.getElementById('proposals-container');
+      if (list.length === 0) {
+        container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--admin-ink-muted);">No proposals issued yet. Click "+ Create New Proposal".</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(p => `
+        <article class="prop-card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px;">
+            <div>
+              <span style="font-size:11px; font-weight:700; color:var(--admin-copper); font-family:monospace;">${p.id}</span>
+              <span style="font-size:11px; color:var(--admin-ink-muted); margin-left:6px;">For ${p.requestId}</span>
+            </div>
+            <span class="tag-status status-${p.status}">${p.status.replace('_', ' ')}</span>
+          </div>
+
+          <h3 style="font-family:var(--font-serif); font-size:18px; font-weight:600; color:var(--admin-ink); line-height:1.25; margin-bottom:8px;">
+            ${p.title}
+          </h3>
+
+          <div style="font-size:12px; color:var(--admin-ink-muted); line-height:1.5; margin-bottom:16px;">
+            Client: <strong>${p.clientName || p.clientEmail}</strong><br>
+            Validity: ${p.validityDays || 30} days · Created ${new Date(p.createdAt).toLocaleDateString()}
+          </div>
+
+          <div style="background:var(--admin-sand-light); padding:10px 12px; border-radius:6px; margin-bottom:16px; font-size:13px; display:flex; justify-content:space-between; align-items:center;">
+            <span>Proposal Amount:</span>
+            <strong style="font-size:16px; color:var(--admin-copper);">₹${(p.totalAmount || 0).toLocaleString('en-IN')}</strong>
+          </div>
+
+          <div style="display:flex; gap:8px; margin-top:auto; padding-top:14px; border-top:1px solid var(--admin-border-subtle);">
+            ${p.status === 'draft' ? `
+              <button class="send-btn admin-btn" data-id="${p.id}" style="padding:6px 12px; font-size:11.5px; width:auto;">
+                <i data-lucide="send" style="width:12px; height:12px;"></i> Send to Client
+              </button>
+            ` : ''}
+            <button class="export-pdf-btn admin-btn" data-id="${p.id}" style="padding:6px 12px; font-size:11.5px; width:auto; background:var(--admin-sand); color:var(--admin-ink); border-color:var(--admin-border); box-shadow:none;">
+              <i data-lucide="download" style="width:12px; height:12px;"></i> Export PDF
+            </button>
+          </div>
+        </article>
+      `).join('');
+
+      if (window.lucide) window.lucide.createIcons();
+
+      // Bind send buttons
+      container.querySelectorAll('.send-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (confirm('Send this architectural proposal formally to the client portal?')) {
+            await adminApi.sendProposal(btn.dataset.id);
+            await loadProposals();
+          }
+        });
+      });
+
+      // Bind PDF export buttons
+      container.querySelectorAll('.export-pdf-btn').forEach(btn => {
+        btn.addEventListener('click', () => exportProposalPdf(btn.dataset.id));
+      });
+    }
+
+    function exportProposalPdf(id) {
+      const p = proposals.find(item => item.id === id);
+      if (!p || !window.jspdf) return;
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      // Architectural letterhead
+      doc.setFillColor(28, 27, 26);
+      doc.rect(0, 0, 210, 36, 'F');
+
+      doc.setFont('times', 'bold');
+      doc.setFontSize(20);
+      doc.setTextColor(217, 183, 126);
+      doc.text('Shilp Griha Associate (SGA)', 18, 20);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8.5);
+      doc.setTextColor(239, 233, 225);
+      doc.text('ARCHITECTURAL PLANNING & DESIGN STUDIO · AR. VIKAS VERMA', 18, 28);
+      doc.text('ar.vikasverma0401@gmail.com · +91 79854 36965 · Gola Gokarnath, UP', 100, 28);
+
+      // Proposal Title & Details
+      doc.setFont('times', 'bold');
+      doc.setFontSize(16);
+      doc.setTextColor(28, 27, 26);
+      doc.text('ARCHITECTURAL DESIGN PROPOSAL', 18, 50);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+      doc.setTextColor(111, 106, 100);
+      doc.text(`Proposal Ref: ${p.id}`, 18, 58);
+      doc.text(`Request Ref: ${p.requestId}`, 18, 64);
+      doc.text(`Client: ${p.clientName || p.clientEmail}`, 120, 58);
+      doc.text(`Issued Date: ${new Date(p.createdAt).toLocaleDateString()}`, 120, 64);
+
+      // Line items
+      let y = 80;
+      doc.setFillColor(244, 239, 234);
+      doc.rect(18, y - 6, 174, 10, 'F');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.setTextColor(28, 27, 26);
+      doc.text('Scope Item Deliverable', 22, y);
+      doc.text('Qty', 130, y);
+      doc.text('Amount (INR)', 160, y);
+
+      y += 8;
+      doc.setFont('helvetica', 'normal');
+      (p.lineItems || []).forEach(item => {
+        y += 7;
+        doc.text(String(item.description), 22, y);
+        doc.text(String(item.qty || 1), 132, y);
+        doc.text(`INR ${(item.amount || 0).toLocaleString('en-IN')}`, 160, y);
+      });
+
+      y += 14;
+      doc.setDrawColor(217, 183, 126);
+      doc.line(18, y, 192, y);
+      y += 8;
+      doc.text(`Subtotal: INR ${(p.subtotal || 0).toLocaleString('en-IN')}`, 130, y);
+      y += 6;
+      doc.text(`GST (18%): INR ${(p.gstAmount || 0).toLocaleString('en-IN')}`, 130, y);
+      y += 8;
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(196, 122, 59);
+      doc.text(`Total Fee: INR ${(p.totalAmount || 0).toLocaleString('en-IN')}`, 130, y);
+
+      // Footer
+      doc.setFont('helvetica', 'italic');
+      doc.setFontSize(8);
+      doc.setTextColor(150, 150, 150);
+      doc.text('This proposal is valid for 30 days from date of issuance. Shilp Griha Associate (Ar. Vikas Verma).', 18, 280);
+
+      doc.save(`Proposal_${p.id}.pdf`);
+    }
+
+    // Drawer handling
+    const drawer = document.getElementById('prop-drawer');
+    function openDrawer() { drawer.classList.add('is-open'); }
+    function closeDrawer() { drawer.classList.remove('is-open'); }
+
+    document.getElementById('create-proposal-btn').addEventListener('click', openDrawer);
+    document.getElementById('close-drawer-btn').addEventListener('click', closeDrawer);
+    document.getElementById('cancel-drawer-btn').addEventListener('click', closeDrawer);
+
+    function bindCalculations() {
+      const recalc = () => {
+        let sub = 0;
+        document.querySelectorAll('.item-row').forEach(row => {
+          const qty = parseFloat(row.querySelector('.item-qty').value) || 0;
+          const rate = parseFloat(row.querySelector('.item-rate').value) || 0;
+          sub += (qty * rate);
+        });
+        const gst = Math.round(sub * 0.18);
+        const tot = sub + gst;
+        document.getElementById('calc-subtotal').textContent = `₹${sub.toLocaleString('en-IN')}`;
+        document.getElementById('calc-gst').textContent = `₹${gst.toLocaleString('en-IN')}`;
+        document.getElementById('calc-total').textContent = `₹${tot.toLocaleString('en-IN')}`;
+      };
+
+      document.getElementById('items-container').addEventListener('input', recalc);
+
+      document.getElementById('add-item-btn').addEventListener('click', () => {
+        const row = document.createElement('div');
+        row.className = 'item-row';
+        row.style.cssText = 'display:grid; grid-template-columns:3fr 1fr 1.5fr; gap:8px; margin-top:8px;';
+        row.innerHTML = `
+          <input type="text" class="admin-input item-desc" placeholder="Scope Deliverable" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+          <input type="number" class="admin-input item-qty" placeholder="Qty" value="1" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+          <input type="number" class="admin-input item-rate" placeholder="Rate (₹)" value="50000" style="background:var(--admin-white); border-color:var(--admin-border); color:var(--admin-ink);">
+        `;
+        document.getElementById('items-container').appendChild(row);
+      });
+    }
+
+    document.getElementById('prop-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = document.getElementById('prop-title').value.trim();
+      const requestId = document.getElementById('prop-req-id').value.trim();
+      const clientEmail = document.getElementById('prop-client-email').value.trim();
+      const scopeSummary = document.getElementById('prop-scope').value.trim();
+
+      const lineItems = [];
+      document.querySelectorAll('.item-row').forEach(row => {
+        const desc = row.querySelector('.item-desc').value.trim();
+        const qty = parseFloat(row.querySelector('.item-qty').value) || 1;
+        const rate = parseFloat(row.querySelector('.item-rate').value) || 0;
+        if (desc) {
+          lineItems.push({ description: desc, qty, rate, amount: qty * rate });
+        }
+      });
+
+      await adminApi.createProposal({
+        title,
+        requestId,
+        clientEmail,
+        scopeSummary,
+        lineItems
+      });
+
+      closeDrawer();
+      await loadProposals();
+    });
+
+    initPage();
+  </script>
+</body>
+</html>

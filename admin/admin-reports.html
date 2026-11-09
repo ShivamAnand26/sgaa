@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics & Reports — SGA Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="admin-layout">
+    <div id="shell-sidebar"></div>
+
+    <main class="admin-main">
+      <div id="shell-topbar"></div>
+
+      <div class="admin-content-area">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px; flex-wrap:wrap; gap:16px;">
+          <div>
+            <h1 style="font-family:var(--font-serif); font-size:32px; font-weight:600; color:var(--admin-ink); line-height:1.1;">
+              Studio Analytics & Financial Reports
+            </h1>
+            <p style="font-size:13.5px; color:var(--admin-ink-muted); margin-top:4px;">
+              Comprehensive breakdown of study notes sales, client commissions, and seasonal growth trends.
+            </p>
+          </div>
+          <button id="download-summary-btn" class="admin-btn" style="width:auto; background:var(--admin-sand); color:var(--admin-ink); border-color:var(--admin-border); box-shadow:none;">
+            <i data-lucide="file-text"></i>
+            <span>Download CSV Summary</span>
+          </button>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:28px;">
+          <div style="background:var(--admin-white); border:1px solid var(--admin-border); border-radius:10px; padding:22px;">
+            <h3 style="font-family:var(--font-serif); font-size:20px; font-weight:600; margin-bottom:16px;">Quarterly Revenue Growth</h3>
+            <div style="height:280px; position:relative;">
+              <canvas id="quarterChart"></canvas>
+            </div>
+          </div>
+
+          <div style="background:var(--admin-white); border:1px solid var(--admin-border); border-radius:10px; padding:22px;">
+            <h3 style="font-family:var(--font-serif); font-size:20px; font-weight:600; margin-bottom:16px;">Top Performing Study Notes</h3>
+            <div style="height:280px; position:relative;">
+              <canvas id="notesChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { adminApi } from '../client/js/admin-api.js';
+    import { initAdminShell } from './js/admin-shell.js';
+
+    async function initPage() {
+      await initAdminShell('reports', 'Analytics Reports');
+      renderQuarterChart();
+      renderNotesChart();
+    }
+
+    function renderQuarterChart() {
+      const ctx = document.getElementById('quarterChart');
+      if (!ctx || !window.Chart) return;
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Q1 2026', 'Q2 2026', 'Q3 2026', 'Q4 2026'],
+          datasets: [{
+            label: 'Study Notes Revenue (₹)',
+            data: [68000, 114000, 185000, 240000],
+            backgroundColor: '#C47A3B',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function renderNotesChart() {
+      const ctx = document.getElementById('notesChart');
+      if (!ctx || !window.Chart) return;
+      new Chart(ctx, {
+        type: 'bar',
+        indexAxis: 'y',
+        data: {
+          labels: ['Seismic Design', 'Building Materials', 'Working Drawings', 'Spatial Theory', 'Urban Planning'],
+          datasets: [{
+            label: 'Sales Count',
+            data: [42, 36, 31, 25, 19],
+            backgroundColor: '#D9B77E',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    document.getElementById('download-summary-btn').addEventListener('click', () => {
+      const csv = 'Report,Period,Total Sales,Total Orders\nStudy Notes,2026 Full Year,INR 6,07,000,412\nArchitectural Commissions,2026 Full Year,INR 45,20,000,15\n';
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'SGA_Annual_Studio_Report.csv';
+      a.click();
+    });
+
+    initPage();
+  </script>
+</body>
+</html>

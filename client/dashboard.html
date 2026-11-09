@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Dashboard — Shilp Griha Associate (SGA)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/portal.css">
+</head>
+<body class="portal-layout">
+
+  <!-- Left Sidebar (260px Fixed) -->
+  <aside class="portal-sidebar" id="portal-sidebar" aria-label="Portal Navigation">
+    <div class="sidebar-brand">
+      <a href="../index.html" class="brand-link" style="display:flex; flex-direction:column; gap:4px; text-decoration:none;">
+        <img src="/assets/logo-full.png" alt="Shilp Griha Associate" style="height:36px; width:auto; max-width:160px; object-fit:contain; display:block;">
+        <span style="display:block; font-size:9.5px; color:var(--copper); font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding-left:2px;">Client Portal</span>
+      </a>
+      <button type="button" class="sidebar-close" id="sidebar-close" aria-label="Close menu">&times;</button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="dashboard.html" class="nav-item is-active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/>
+          <rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+
+      <a href="new-request.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+        </svg>
+        <span>Submit Request</span>
+      </a>
+
+      <a href="my-requests.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <span>My Requests</span>
+      </a>
+
+      <a href="notifications.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span>Notifications</span>
+        <span class="nav-badge" id="nav-notif-badge" style="display:none;">0</span>
+      </a>
+
+      <a href="profile.html" class="nav-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+        <span>My Profile</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-mini-card">
+        <div class="user-avatar-circle" id="sidebar-avatar">C</div>
+        <div class="user-mini-info">
+          <span class="user-mini-name" id="user-display-name">Client</span>
+          <span class="user-mini-email" id="user-display-email">client@sga.in</span>
+        </div>
+      </div>
+      <button type="button" class="sidebar-logout" id="logout-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span>Sign Out</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrap -->
+  <div class="portal-main">
+    <header class="portal-header">
+      <div class="header-left">
+        <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle navigation menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+        <h1 class="page-title">Client Dashboard</h1>
+      </div>
+
+      <div class="header-actions">
+
+
+        <a href="notifications.html" class="notif-bell-btn" aria-label="Notifications">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="notif-badge" id="header-notif-badge" style="display:none;">0</span>
+        </a>
+
+        <a href="profile.html" class="header-user-btn" aria-label="Profile settings">
+          <div class="header-user-avatar" id="header-avatar">C</div>
+          <span class="header-user-name">Account</span>
+        </a>
+      </div>
+    </header>
+
+    <main class="portal-content page-fade-in">
+      <div class="dashboard-hero">
+        <p class="section-label">Studio Workspace</p>
+        <h2>Welcome back, <em id="user-first-name">Client</em>.</h2>
+        <p>Monitor your architectural submissions, track milestones, and view drawing updates.</p>
+      </div>
+
+      <!-- 4 Stat Cards -->
+      <section class="stats-grid" aria-label="Request Statistics">
+        <article class="card stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Total Requests</span>
+            <div class="stat-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-total">0</div>
+        </article>
+
+        <article class="card stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Pending Review</span>
+            <div class="stat-icon" style="color:var(--status-review)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-pending">0</div>
+        </article>
+
+        <article class="card stat-card">
+          <div class="stat-header">
+            <span class="stat-label">In Progress</span>
+            <div class="stat-icon" style="color:var(--copper)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-in-progress">0</div>
+        </article>
+
+        <article class="card stat-card">
+          <div class="stat-header">
+            <span class="stat-label">Completed</span>
+            <div class="stat-icon" style="color:var(--status-completed)">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+            </div>
+          </div>
+          <div class="stat-value" id="stat-completed">0</div>
+        </article>
+      </section>
+
+      <!-- Action Banner: Start New Request -->
+      <section class="action-banner">
+        <div class="action-banner-text">
+          <p class="section-label" style="margin-bottom:4px;">Planning a new property or elevation?</p>
+          <h3>Start a new design request</h3>
+          <p>Submit your plot dimensions, site photographs, and functional requirements for a tailored architectural proposal.</p>
+        </div>
+        <a href="new-request.html" class="btn btn-primary">
+          Submit New Request &rarr;
+        </a>
+      </section>
+
+      <!-- Dashboard Split: Recent Requests (Left) & Feed (Right) -->
+      <div class="dashboard-split">
+        <!-- Recent Requests -->
+        <section class="card">
+          <div class="card-section-header">
+            <h3>Recent Design Requests</h3>
+            <a href="my-requests.html" class="text-link">View all &rarr;</a>
+          </div>
+          <div id="recent-requests-container">
+            <div class="skeleton" style="height:120px; width:100%;"></div>
+          </div>
+        </section>
+
+        <!-- Studio Updates Feed -->
+        <section class="card">
+          <div class="card-section-header">
+            <h3>Latest Updates</h3>
+            <a href="notifications.html" class="text-link">All updates &rarr;</a>
+          </div>
+          <div id="recent-feed-container">
+            <div class="skeleton" style="height:120px; width:100%;"></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { initDashboard } from './js/dashboard.js';
+    initDashboard();
+  </script>
+</body>
+</html>
